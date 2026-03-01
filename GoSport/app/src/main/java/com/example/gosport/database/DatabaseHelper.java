@@ -3,6 +3,11 @@ package com.example.gosport.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.content.ContentValues;
+import android.database.Cursor;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -133,6 +138,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_PAYMENTS);
         db.execSQL(CREATE_REVIEWS);
 
+        // Seed tai khoan ADMIN mac dinh
+        ContentValues adminValues = new ContentValues();
+        adminValues.put(USER_FULL_NAME, "Quản trị viên");
+        adminValues.put(USER_EMAIL, "admin@gosport.com");
+        adminValues.put(USER_PHONE, "0123456789");
+        adminValues.put(USER_PASSWORD, hashPassword("Admin123"));
+        adminValues.put(USER_ROLE, "ADMIN");
+        adminValues.put(USER_IS_ACTIVE, 1);
+        adminValues.put(USER_IS_DELETED, 0);
+        db.insert(TABLE_USERS, null, adminValues);
+
+
 
     }
 
@@ -146,4 +163,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
+
+    // ================= HASH PASSWORD =================
+    public static String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // ================= INSERT USER =================
+    public long insertUser(String fullName, String email, String phone, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_FULL_NAME, fullName);
+        values.put(USER_EMAIL, email);
+        values.put(USER_PHONE, phone);
+        values.put(USER_PASSWORD, hashPassword(password));
+        values.put(USER_ROLE, "USER");
+        values.put(USER_IS_ACTIVE, 1);
+        values.put(USER_IS_DELETED, 0);
+        long result = db.insert(TABLE_USERS, null, values);
+        db.close();
+        return result;
+    }
+
+    // ================= CHECK LOGIN =================
+    public Cursor checkLogin(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String hashedPassword = hashPassword(password);
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + TABLE_USERS +
+                        " WHERE " + USER_EMAIL + " = ?" +
+                        " AND " + USER_PASSWORD + " = ?" +
+                        " AND " + USER_IS_ACTIVE + " = 1" +
+                        " AND " + USER_IS_DELETED + " = 0",
+                new String[]{email, hashedPassword}
+        );
+        return cursor;
+    }
+
+    // ================= CHECK EMAIL EXISTS =================
+    public boolean isEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + USER_EMAIL + " = ?",
+                new String[]{email}
+        );
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    // ================= CHECK PHONE EXISTS =================
+    public boolean isPhoneExists(String phone) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + USER_PHONE + " = ?",
+                new String[]{phone}
+        );
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
 }
