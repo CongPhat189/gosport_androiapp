@@ -66,11 +66,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "field_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "category_id INTEGER NOT NULL, " +
                     "field_name TEXT NOT NULL, " +
+                    "address TEXT NOT NULL," +
                     "description TEXT, " +
                     "price_per_hour REAL NOT NULL CHECK(price_per_hour >= 0), " +
                     "status TEXT CHECK(status IN ('Available','Maintenance')) DEFAULT 'Available', " +
+                    "image_url TEXT, " +
                     "is_deleted INTEGER DEFAULT 0, " +
-                    "FOREIGN KEY(category_id) REFERENCES " + TABLE_CATEGORIES + "(category_id) ON DELETE CASCADE" +
+                    "FOREIGN KEY(category_id) REFERENCES " +
+                    TABLE_CATEGORIES + "(category_id) ON DELETE CASCADE" +
                     ");";
 
     // ================= CREATE TABLE BOOKINGS =================
@@ -273,6 +276,105 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "category_id=?", new String[]{String.valueOf(id)});
         db.close();
         return result;
+    }
+
+
+    // ============ FIELDS ================
+    public boolean insertField(int categoryId,
+                               String fieldName,
+                               String address,
+                               String description,
+                               double pricePerHour,
+                               String status,
+                               String imageUrl) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("category_id", categoryId);
+        values.put("field_name", fieldName);
+        values.put("address", address);
+        values.put("description", description);
+        values.put("price_per_hour", pricePerHour);
+        values.put("status", status);
+        values.put("image_url", imageUrl);
+
+        long result = db.insert(TABLE_FIELDS, null, values);
+        return result != -1;
+    }
+
+
+    public Cursor getAllFields() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT f.field_id, f.category_id, c.category_name, " +
+                        "f.field_name,f.address, f.description, f.price_per_hour, " +
+                        "f.status, f.image_url " +
+                        "FROM " + TABLE_FIELDS + " f " +
+                        "INNER JOIN " + TABLE_CATEGORIES + " c " +
+                        "ON f.category_id = c.category_id " +
+                        "WHERE f.is_deleted = 0";
+
+        return db.rawQuery(query, null);
+    }
+
+
+    public boolean updateField(int fieldId,
+                               int categoryId,
+                               String fieldName,
+                               String address,
+                               String description,
+                               double pricePerHour,
+                               String status,
+                               String imageUrl) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("category_id", categoryId);
+        values.put("field_name", fieldName);
+        values.put("address", address);
+        values.put("description", description);
+        values.put("price_per_hour", pricePerHour);
+        values.put("status", status);
+        values.put("image_url", imageUrl);
+
+        int result = db.update(TABLE_FIELDS,
+                values,
+                "field_id = ?",
+                new String[]{String.valueOf(fieldId)});
+
+        return result > 0;
+    }
+
+    public boolean deleteField(int fieldId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("is_deleted", 1);
+
+        int result = db.update(TABLE_FIELDS,
+                values,
+                "field_id = ?",
+                new String[]{String.valueOf(fieldId)});
+
+        return result > 0;
+    }
+    public Cursor getFieldsByCategory(int categoryId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT f.field_id, f.category_id, c.category_name, " +
+                "f.field_name, f.address, f.description, " +
+                "f.price_per_hour, f.status, f.image_url " +
+                "FROM Fields f " +
+                "INNER JOIN Categories c ON f.category_id = c.category_id " +
+                "WHERE f.category_id = ? AND f.is_deleted = 0";
+
+        return db.rawQuery(query,
+                new String[]{String.valueOf(categoryId)});
     }
 
 }
