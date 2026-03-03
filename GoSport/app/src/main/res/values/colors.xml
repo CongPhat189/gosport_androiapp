@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary_dark_green">#1B5E20</color> <!-- Xanh lá đậm -->
+    <color name="primary_light_green">#4C8C4A</color>
+    <color name="background_gray">#F5F5F5</color> <!-- Màu nền xám nhạt để nổi bật thẻ trắng -->
+    <color name="text_color_dark">#212121</color>
+
 </resources>

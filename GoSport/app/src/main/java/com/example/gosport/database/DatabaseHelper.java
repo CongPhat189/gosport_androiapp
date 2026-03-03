@@ -57,8 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_CATEGORIES + " (" +
                     "category_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "category_name TEXT NOT NULL, " +
-                    "description TEXT, " +
-                    "image_url TEXT" +
+                    "description TEXT " +
                     ");";
 
     // ================= CREATE TABLE FIELDS =================
@@ -235,6 +234,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
+    }
+
+    // ==========CATEGORY================
+    // Insert Category
+    public long insertCategory(String name, String description) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("category_name", name);
+        values.put("description", description);
+        long result = db.insert(TABLE_CATEGORIES, null, values);
+        db.close();
+        return result;
+    }
+
+    // Get All
+    public Cursor getAllCategories() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_CATEGORIES, null);
+    }
+
+    // Update
+    public int updateCategory(int id, String name, String description) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("category_name", name);
+        values.put("description", description);
+        int result = db.update(TABLE_CATEGORIES, values,
+                "category_id=?", new String[]{String.valueOf(id)});
+        db.close();
+        return result;
+    }
+
+    // Delete
+    public int deleteCategory(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_CATEGORIES,
+                "category_id=?", new String[]{String.valueOf(id)});
+        db.close();
+        return result;
     }
 
 }
