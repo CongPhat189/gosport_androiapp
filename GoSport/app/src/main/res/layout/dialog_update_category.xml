@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <!-- Tiêu đề Dialog -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cập nhật Danh mục"
+        android:textColor="#1B5E20"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Nhãn: Tên danh mục -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên danh mục"
+        android:textColor="#757575"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/edtUpdateName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Nhập tên mới..."
+        android:paddingHorizontal="12dp"
+        android:textSize="15sp"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Nhãn: Mô tả -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mô tả chi tiết"
+        android:textColor="#757575"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/edtUpdateDescription"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/edit_text_bg"
+        android:gravity="top"
+        android:hint="Nhập mô tả mới..."
+        android:padding="12dp"
+        android:textSize="15sp"
+        android:inputType="textMultiLine" />
+
+
+
+</LinearLayout>
