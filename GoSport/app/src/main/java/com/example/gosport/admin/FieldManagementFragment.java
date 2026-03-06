@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.gosport.R;
 import com.example.gosport.adapter.FieldAdapter;
+import com.example.gosport.adapter.FieldAdapterUser;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.model.FieldModel;
 

@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.gosport.R;
-import com.example.gosport.adapter.FieldAdapter;
+import com.example.gosport.adapter.FieldAdapterUser;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.model.CategoryModel;
 import com.example.gosport.model.FieldModel;
@@ -30,7 +30,7 @@ public class FieldListFragment extends Fragment {
     ListView listView;
     Spinner spCategory;
 
-    FieldAdapter adapter;
+    FieldAdapterUser adapter;
     ArrayList<FieldModel> fieldList;
     ArrayList<CategoryModel> categoryList;
 
@@ -60,7 +60,7 @@ public class FieldListFragment extends Fragment {
 
         loadFields();
         loadCategories();
-        adapter = new FieldAdapter(getContext(), fieldList);
+        adapter = new FieldAdapterUser(getContext(), fieldList);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener((parent, view1, position, id) -> {
