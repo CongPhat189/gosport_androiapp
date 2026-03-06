@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="12dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Ảnh sân -->
+            <ImageView
+                android:id="@+id/imgField"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_background"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Tên sân -->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tên sân"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#111"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Loại sân -->
+                <TextView
+                    android:id="@+id/tvCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loại sân"
+                    android:textColor="#555"
+                    android:textSize="14sp"/>
+
+                <!-- Địa chỉ -->
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ"
+                    android:textColor="#777"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+                <!-- Giá -->
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="150.000đ / giờ"
+                    android:textColor="#2E7D32"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"/>
+
+                <!-- Trạng thái -->
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Còn sân"
+                    android:textColor="#0288D1"
+                    android:layout_marginTop="4dp"/>
+
+                <!-- Mô tả -->
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mô tả sân..."
+                    android:textColor="#555"
+                    android:layout_marginTop="12dp"/>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#EEEEEE"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- CHỌN NGÀY -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chọn ngày"
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:text="Nhấn để chọn ngày"
+                    android:layout_marginTop="6dp"/>
+
+                <!-- CHỌN GIỜ -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chọn giờ"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:layout_marginTop="16dp"/>
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:text="Nhấn để chọn giờ"
+                    android:layout_marginTop="6dp"/>
+
+                <!-- Nút đặt sân -->
+                <Button
+                    android:id="@+id/btnBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Xác nhận đặt sân"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#2E7D32"
+                    android:layout_marginTop="20dp"/>
+
+                <!-- Nút chỉ đường -->
+                <Button
+                    android:id="@+id/btnDirection"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Chỉ đường"
+                    android:backgroundTint="#1976D2"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</ScrollView>

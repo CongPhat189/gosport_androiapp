@@ -21,10 +21,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.LoginActivity" android:exported="false" />
-        <activity android:name=".auth.RegisterActivity" android:exported="false" />
-        <activity android:name=".HomeActivity" android:exported="false" />
-        <activity android:name=".admin.AdminActivity"/>
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".user.UserActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".user.FieldDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

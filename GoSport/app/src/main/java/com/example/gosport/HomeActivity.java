@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gosport.admin.AdminActivity;
+import com.example.gosport.user.UserActivity;
 import com.example.gosport.utils.SessionManager;
 
 public class HomeActivity extends AppCompatActivity {
@@ -33,13 +34,33 @@ public class HomeActivity extends AppCompatActivity {
 
         String role = sessionManager.getRole();
 
-        if (role != null && role.equals("ADMIN")) {
+//        if (role != null) {
+//
+//            new Handler(getMainLooper()).postDelayed(() -> {
+//
+//                if (role.equals("ADMIN")) {
+//                    startActivity(new Intent(HomeActivity.this, AdminActivity.class));
+//                } else if (role.equals("USER")) {
+//                    startActivity(new Intent(HomeActivity.this, UserActivity.class));
+//                }
+//
+//                finish();
+//
+//            }, 1000);
+//        }
+        if (role != null) {
 
             new Handler(getMainLooper()).postDelayed(() -> {
-                startActivity(new Intent(HomeActivity.this, AdminActivity.class));
-                finish();
-            }, 2000);
 
+                if ("ADMIN".equals(role)) {
+                    startActivity(new Intent(HomeActivity.this, AdminActivity.class));
+                }
+                else if ("USER".equals(role)) {
+                    startActivity(new Intent(HomeActivity.this, UserActivity.class));
+                }
+                finish();
+
+            }, 1000);
         }
 
         btnLogout.setOnClickListener(v -> {

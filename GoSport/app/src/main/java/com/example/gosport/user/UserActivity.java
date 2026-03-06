@@ -1,9 +1,8 @@
-package com.example.gosport.admin;
+package com.example.gosport.user;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,21 +16,21 @@ import com.example.gosport.R;
 import com.example.gosport.auth.LoginActivity;
 import com.example.gosport.utils.SessionManager;
 
-public class AdminActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
 
-    LinearLayout btnUser, btnCategory, btnField, btnBooking, btnReport,btnLogout;
-    TextView tvAdminName;
+    LinearLayout btnViewField, btnProfile, btnLogout;
+    TextView tvUserName;
 
     SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_user);
 
         sessionManager = new SessionManager(this);
 
@@ -46,42 +45,24 @@ public class AdminActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        tvAdminName = findViewById(R.id.tvAdminName);
-        tvAdminName.setText(sessionManager.getFullName());
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserName.setText(sessionManager.getFullName());
 
-        btnUser = findViewById(R.id.btnUser);
-        btnCategory = findViewById(R.id.btnCategory);
-        btnField = findViewById(R.id.btnField);
-        btnBooking = findViewById(R.id.btnBooking);
-        btnReport = findViewById(R.id.btnReport);
+        btnViewField = findViewById(R.id.btnViewField);
+        btnProfile = findViewById(R.id.btnProfile);
         btnLogout = findViewById(R.id.btnLogout);
 
         if (savedInstanceState == null) {
-            loadFragment(new UserManagementFragment());
+            loadFragment(new FieldListFragment());
         }
 
-        btnUser.setOnClickListener(v -> {
-            loadFragment(new UserManagementFragment());
+        btnViewField.setOnClickListener(v -> {
+            loadFragment(new FieldListFragment());
             drawerLayout.closeDrawers();
         });
 
-        btnCategory.setOnClickListener(v -> {
-            loadFragment(new CategoryManagementFragment());
-            drawerLayout.closeDrawers();
-        });
-
-        btnField.setOnClickListener(v -> {
-            loadFragment(new FieldManagementFragment());
-            drawerLayout.closeDrawers();
-        });
-
-        btnBooking.setOnClickListener(v -> {
-            loadFragment(new BookingManagementFragment());
-            drawerLayout.closeDrawers();
-        });
-
-        btnReport.setOnClickListener(v -> {
-            loadFragment(new ReportFragment());
+        btnProfile.setOnClickListener(v -> {
+            loadFragment(new ProfileFragment());
             drawerLayout.closeDrawers();
         });
 
@@ -94,7 +75,7 @@ public class AdminActivity extends AppCompatActivity {
 
                         sessionManager.logout();
 
-                        Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(UserActivity.this, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

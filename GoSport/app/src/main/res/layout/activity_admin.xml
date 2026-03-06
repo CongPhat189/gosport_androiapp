@@ -156,6 +156,21 @@
                     <TextView style="@style/AdminMenuTextStyle" android:text="Báo cáo thống kê" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/btnLogout"
+                    style="@style/AdminMenuItemStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        style="@style/AdminMenuIconStyle"
+                        android:src="@android:drawable/ic_lock_power_off" />
+
+                    <TextView
+                        style="@style/AdminMenuTextStyle"
+                        android:text="Đăng xuất" />
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

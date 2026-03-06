@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -120,7 +121,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ");";
 
 
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -151,7 +151,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         adminValues.put(USER_IS_DELETED, 0);
         db.insert(TABLE_USERS, null, adminValues);
 
+        // ===== SEED CATEGORIES =====
+        ContentValues cat1 = new ContentValues();
+        cat1.put("category_name", "Sân bóng đá");
+        cat1.put("description", "Sân 5 người, 7 người");
+        long footballId = db.insert(TABLE_CATEGORIES, null, cat1);
 
+        ContentValues cat2 = new ContentValues();
+        cat2.put("category_name", "Sân cầu lông");
+        cat2.put("description", "Sân trong nhà");
+        long badmintonId = db.insert(TABLE_CATEGORIES, null, cat2);
+
+        ContentValues cat3 = new ContentValues();
+        cat3.put("category_name", "Sân tennis");
+        cat3.put("description", "Sân ngoài trời");
+        long tennisId = db.insert(TABLE_CATEGORIES, null, cat3);
+
+        // ===== SEED FIELDS =====
+        ContentValues field1 = new ContentValues();
+        field1.put("category_id", footballId);
+        field1.put("field_name", "Sân A1");
+        field1.put("address", "212 Điện Biên Phủ, Phường 17, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam");
+        field1.put("description", "Sân mới, cỏ nhân tạo");
+        field1.put("price_per_hour", 300000);
+        field1.put("status", "Available");
+        field1.put("image_url", "");
+        db.insert(TABLE_FIELDS, null, field1);
+
+        ContentValues field2 = new ContentValues();
+        field2.put("category_id", badmintonId);
+        field2.put("field_name", "Sân Cầu Lông B2");
+        field2.put("address", "Quận 3, TP.HCM");
+        field2.put("description", "Sân trong nhà, máy lạnh");
+        field2.put("price_per_hour", 150000);
+        field2.put("status", "Available");
+        field2.put("image_url", "");
+        db.insert(TABLE_FIELDS, null, field2);
+
+        ContentValues field3 = new ContentValues();
+        field3.put("category_id", tennisId);
+        field3.put("field_name", "Sân Tennis T1");
+        field3.put("address", "Quận 7, TP.HCM");
+        field3.put("description", "Sân chuẩn thi đấu");
+        field3.put("price_per_hour", 400000);
+        field3.put("status", "Maintenance");
+        field3.put("image_url", "");
+        db.insert(TABLE_FIELDS, null, field3);
+
+        // ===== SEED USER =====
+        ContentValues user1 = new ContentValues();
+        user1.put(USER_FULL_NAME, "Nguyễn Văn A");
+        user1.put(USER_EMAIL, "user1@gosport.com");
+        user1.put(USER_PHONE, "0988888888");
+        user1.put(USER_PASSWORD, hashPassword("User123"));
+        user1.put(USER_ROLE, "USER");
+        user1.put(USER_IS_ACTIVE, 1);
+        user1.put(USER_IS_DELETED, 0);
+        db.insert(TABLE_USERS, null, user1);
 
     }
 
@@ -362,6 +418,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
+
     public Cursor getFieldsByCategory(int categoryId) {
 
         SQLiteDatabase db = this.getReadableDatabase();
