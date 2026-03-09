@@ -87,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "end_time TEXT NOT NULL, " +
                     "booking_type TEXT CHECK(booking_type IN ('Daily','Fixed')), " +
                     "total_price REAL CHECK(total_price >= 0), " +
-                    "status TEXT CHECK(status IN ('Pending','Confirmed','Cancelled','Completed')) DEFAULT 'Pending', " +
+                    "status TEXT CHECK(status IN ('Pending','Confirmed','Checkin','Cancelled','Completed')) DEFAULT 'Pending', " +
                     "note TEXT, " +
                     "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
                     "FOREIGN KEY(user_id) REFERENCES " + TABLE_USERS + "(user_id) ON DELETE CASCADE, " +
