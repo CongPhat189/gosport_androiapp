@@ -91,6 +91,21 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/btnFielded"
+                style="@style/AdminMenuItemStyle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    style="@style/AdminMenuIconStyle"
+                    android:src="@android:drawable/ic_menu_myplaces"/>
+
+                <TextView
+                    style="@style/AdminMenuTextStyle"
+                    android:text="Sân đã đặt"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/btnLogout"
                 style="@style/AdminMenuItemStyle"
                 android:layout_width="match_parent"

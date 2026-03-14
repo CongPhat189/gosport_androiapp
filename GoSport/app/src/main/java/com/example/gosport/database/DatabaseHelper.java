@@ -8,6 +8,8 @@ import android.database.Cursor;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -196,7 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         field3.put("price_per_hour", 400000);
         field3.put("status", "Maintenance");
         field3.put("image_url", "");
-        db.insert(TABLE_FIELDS, null, field3);
+        long fieldId = db.insert(TABLE_FIELDS, null, field3);
 
         // ===== SEED USER =====
         ContentValues user1 = new ContentValues();
@@ -207,8 +209,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         user1.put(USER_ROLE, "USER");
         user1.put(USER_IS_ACTIVE, 1);
         user1.put(USER_IS_DELETED, 0);
-        db.insert(TABLE_USERS, null, user1);
+        long userId = db.insert(TABLE_USERS, null, user1);
 
+
+        // ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
+// ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
+
+        // Đơn 1: Chờ duyệt (Pending) - Ngày 15/03/2026
+        ContentValues b1 = new ContentValues();
+        b1.put("user_id", 2); // ID của Nguyễn Văn A vừa tạo ở trên
+        b1.put("field_id", 1); // Sân A1
+        b1.put("start_time", "2026-03-15 08:00:00");
+        b1.put("end_time", "2026-03-15 10:00:00");
+        b1.put("total_price", 600000);
+        b1.put("status", "Pending");
+        db.insert(TABLE_BOOKINGS, null, b1);
+
+        // Đơn 2: Đã Check-in (Checkin) - Ngày 20/03/2026
+        ContentValues b2 = new ContentValues();
+        b2.put("user_id", 2);
+        b2.put("field_id", 2); // Sân B2
+        b2.put("start_time", "2026-03-20 17:00:00");
+        b2.put("end_time", "2026-03-20 19:00:00");
+        b2.put("total_price", 300000);
+        b2.put("status", "Checkin");
+        db.insert(TABLE_BOOKINGS, null, b2);
+
+        // Đơn 3: Hoàn thành (Completed) - Ngày 10/02/2026
+        ContentValues b3 = new ContentValues();
+        b3.put("user_id", 2);
+        b3.put("field_id", 1);
+        b3.put("start_time", "2026-02-10 14:00:00");
+        b3.put("end_time", "2026-02-10 16:00:00");
+        b3.put("total_price", 600000);
+        b3.put("status", "Completed");
+        db.insert(TABLE_BOOKINGS, null, b3);
+
+        // Đơn 4: Đã hủy (Cancelled) - Ngày 01/01/2026
+        ContentValues b4 = new ContentValues();
+        b4.put("user_id", 2);
+        b4.put("field_id", 3);
+        b4.put("start_time", "2026-01-01 09:00:00");
+        b4.put("end_time", "2026-01-01 11:00:00");
+        b4.put("total_price", 800000);
+        b4.put("status", "Cancelled");
+        db.insert(TABLE_BOOKINGS, null, b4);
     }
 
     @Override
@@ -432,6 +477,98 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return db.rawQuery(query,
                 new String[]{String.valueOf(categoryId)});
+    }
+
+
+    public Cursor getBookingsAdminFiltered(String fromDate, String toDate, String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT b.*, u.full_name, u.phone_number, f.field_name " +
+                "FROM bookings b " +
+                "JOIN users u ON b.user_id = u.user_id " +
+                "JOIN fields f ON b.field_id = f.field_id " +
+                "WHERE b.start_time >= ? AND b.start_time <= ?";
+
+        List<String> args = new ArrayList<>();
+        args.add(fromDate + " 00:00:00");
+        args.add(toDate + " 23:59:59");
+
+        if (!status.equals("Tất cả")) {
+            query += " AND b.status = ?";
+            args.add(status);
+        }
+
+        query += " ORDER BY b.start_time DESC";
+        return db.rawQuery(query, args.toArray(new String[0]));
+    }
+
+    // Hàm cập nhật trạng thái đơn (Dùng cho nút Check-in và Hoàn thành)
+    public boolean updateBookingStatus(int bookingId, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", newStatus);
+        return db.update(TABLE_BOOKINGS, values, "booking_id = ?", new String[]{String.valueOf(bookingId)}) > 0;
+    }
+
+    public Cursor getBookingsForUser(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT b.*, f.field_name, f.address " +
+                "FROM bookings b " +
+                "JOIN fields f ON b.field_id = f.field_id " +
+                "WHERE b.user_id = ? " +
+                "ORDER BY b.start_time DESC";
+        return db.rawQuery(query, new String[]{String.valueOf(userId)});
+    }
+
+    public Cursor getBookingsUserFiltered(int userId, String from, String to) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT b.*, f.field_name FROM bookings b JOIN fields f ON b.field_id = f.field_id WHERE b.user_id = ? AND date(b.start_time) BETWEEN date(?) AND date(?) ORDER BY b.start_time DESC",
+                new String[]{String.valueOf(userId), from, to});
+    }
+
+    // 1. Lấy dữ liệu thống kê tổng hợp theo năm
+    public Cursor getYearlyKpis(int year) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " +
+                "COUNT(*) as total_orders, " +
+                "SUM(total_price) as total_revenue, " +
+                "(SELECT COUNT(*) FROM bookings WHERE strftime('%Y', start_time) = ?) as prev_year_orders " +
+                "FROM bookings " +
+                "WHERE strftime('%Y', start_time) = ? AND status = 'Completed'";
+
+        return db.rawQuery(query, new String[]{String.valueOf(year - 1), String.valueOf(year)});
+    }
+
+    // 2. Lấy chi tiết từng tháng (Số đơn, Doanh thu, Trạng thái)
+    public Cursor getMonthlyDetails(int year) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " +
+                "strftime('%m', start_time) as month, " +
+                "COUNT(*) as count, " +
+                "SUM(CASE WHEN status = 'Completed' THEN total_price ELSE 0 END) as revenue, " +
+                "SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed, " +
+                "SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) as cancelled " +
+                "FROM bookings " +
+                "WHERE strftime('%Y', start_time) = ? " +
+                "GROUP BY month ORDER BY month ASC";
+        return db.rawQuery(query, new String[]{String.valueOf(year)});
+    }
+
+    public double getTotalRevenueOfYear(int year) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(totalPrice) FROM Orders WHERE strftime('%Y', date) = ?", new String[]{String.valueOf(year)});
+        double total = 0;
+        if (cursor.moveToFirst()) total = cursor.getDouble(0);
+        cursor.close();
+        return total;
+    }
+
+    public int getTotalOrdersOfYear(int year) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM Orders WHERE strftime('%Y', date) = ?", new String[]{String.valueOf(year)});
+        int count = 0;
+        if (cursor.moveToFirst()) count = cursor.getInt(0);
+        cursor.close();
+        return count;
     }
 
 }
