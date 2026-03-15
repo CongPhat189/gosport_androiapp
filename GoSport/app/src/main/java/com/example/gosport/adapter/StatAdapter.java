@@ -33,25 +33,29 @@ public class StatAdapter extends RecyclerView.Adapter<StatAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StatModel item = list.get(position);
 
+        // Hiển thị nhãn tháng từ model (Ví dụ: "Tháng 03")
         holder.tvMonth.setText(item.monthLabel);
 
         if (isRevenueMode) {
-            // Hiển thị định dạng tiền tệ: 1.500.000đ
+            // LUÔN hiển thị định dạng nghìn đầy đủ
             holder.tvValue.setText(String.format("%,.0fđ", item.revenue));
-            holder.tvValue.setTextColor(Color.parseColor("#1B5E20")); // Màu xanh đậm cho tiền
+            holder.tvValue.setTextColor(Color.parseColor("#1B5E20"));
         } else {
-            // Hiển thị định dạng số lượng: 18 đơn
             holder.tvValue.setText(item.bookingCount + " đơn");
-            holder.tvValue.setTextColor(Color.parseColor("#424242")); // Màu xám cho số lượng
+            holder.tvValue.setTextColor(Color.parseColor("#424242"));
         }
 
-        // Xử lý Growth Badge (+8% hoặc -5%)
-        holder.tvGrowth.setText(item.growth);
-        if (item.growth.startsWith("+")) {
-            holder.tvGrowth.setTextColor(Color.parseColor("#2E7D32"));
-        } else if (item.growth.startsWith("-")) {
-            holder.tvGrowth.setTextColor(Color.parseColor("#C62828"));
-        }
+//        // Tỉ lệ hoàn thành của RIÊNG tháng đó
+//        if (item.bookingCount > 0) {
+//            double ratio = ((double) item.completedOrders / item.bookingCount) * 100;
+//            holder.tvPercentage.setText(String.format("%.0f%%", ratio));
+//            holder.tvPercentage.setTextColor(ratio >= 100 ? Color.parseColor("#388E3C") : Color.parseColor("#F57F17"));
+//        } else {
+//            holder.tvPercentage.setText("0%");
+//        }
+//
+//        // Growth (Tăng trưởng)
+//        holder.tvGrowth.setText(item.growth != null ? item.growth : "0%");
     }
 
     @Override

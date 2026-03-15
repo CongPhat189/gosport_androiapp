@@ -20,11 +20,18 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
     private Context context;
     private List<BookingModel> bookingList;
     private DatabaseHelper dbHelper;
+    private OnStatusChangeListener listener;
 
-    public BookingAdapter(Context context, List<BookingModel> bookingList) {
+    // 1. Khai báo Interface
+    public interface OnStatusChangeListener {
+        void onStatusUpdated();
+    }
+
+    public BookingAdapter(Context context, List<BookingModel> bookingList, OnStatusChangeListener listener) {
         this.context = context;
         this.bookingList = bookingList;
         this.dbHelper = new DatabaseHelper(context);
+        this.listener = listener;
     }
 
     @NonNull
@@ -54,20 +61,26 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
         // 2. Xử lý Logic ẩn hiện nút bấm & Trạng thái hoàn thành
         updateUIBasedOnStatus(holder, booking.status);
 
-        // 3. Sự kiện nút Check-in
         holder.btnCheckIn.setOnClickListener(v -> {
             if (dbHelper.updateBookingStatus(booking.id, "Checkin")) {
                 booking.status = "Checkin";
                 notifyItemChanged(position);
+
+                // 4. Báo cho Fragment biết để update số liệu
+                if (listener != null) listener.onStatusUpdated();
+
                 Toast.makeText(context, "Check-in thành công!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 4. Sự kiện nút Hoàn thành
         holder.btnComplete.setOnClickListener(v -> {
             if (dbHelper.updateBookingStatus(booking.id, "Completed")) {
                 booking.status = "Completed";
                 notifyItemChanged(position);
+
+                // 4. Báo cho Fragment biết để update số liệu
+                if (listener != null) listener.onStatusUpdated();
+
                 Toast.makeText(context, "Đơn hàng đã hoàn tất!", Toast.LENGTH_SHORT).show();
             }
         });

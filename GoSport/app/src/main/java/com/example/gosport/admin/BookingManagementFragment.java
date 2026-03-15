@@ -114,18 +114,41 @@ public class BookingManagementFragment extends Fragment {
             } while (cursor.moveToNext());
             cursor.close();
         }
-        adapter = new BookingAdapter(getContext(), bookingList);
+        adapter = new BookingAdapter(getContext(), bookingList, new BookingAdapter.OnStatusChangeListener() {
+            @Override
+            public void onStatusUpdated() {
+                updateStatistics();
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         updateStatistics();
     }
 
     private void updateStatistics() {
-        // Bạn có thể viết các hàm COUNT trong DatabaseHelper để lấy số chuẩn
-        // Ở đây mình ví dụ đếm trực tiếp từ list hiện tại hoặc gọi nhanh từ DB
-        tvStatTotal.setText(String.valueOf(bookingList.size()));
+        int total = 0;
+        int pending = 0;
+        int checkin = 0;
+        int completed = 0;
 
-        // Để chính xác nhất, bạn nên tạo hàm đếm riêng trong DatabaseHelper
-        // tvStatPending.setText(String.valueOf(dbHelper.countBookingsByStatus("Pending")));
+        // Duyệt qua danh sách hiện có để đếm
+        for (BookingModel booking : bookingList) {
+            total++;
+            String status = booking.getStatus(); // Giả sử model của bạn có hàm getStatus()
+
+            if ("Pending".equalsIgnoreCase(status)) {
+                pending++;
+            } else if ("Checkin".equalsIgnoreCase(status)) {
+                checkin++;
+            } else if ("Completed".equalsIgnoreCase(status)) {
+                completed++;
+            }
+        }
+
+        // Gán giá trị lên UI (Xóa bỏ các con số mặc định trong XML)
+        tvStatTotal.setText(String.valueOf(total));
+        tvStatPending.setText(String.valueOf(pending));
+        tvStatCheckedIn.setText(String.valueOf(checkin));
+        tvStatCompleted.setText(String.valueOf(completed));
     }
 }
