@@ -89,11 +89,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "end_time TEXT NOT NULL, " +
                     "booking_type TEXT CHECK(booking_type IN ('Daily','Fixed')), " +
                     "total_price REAL CHECK(total_price >= 0), " +
+                    "payment_id INTEGER, "+
                     "status TEXT CHECK(status IN ('Pending','Confirmed','Checkin','Cancelled','Completed')) DEFAULT 'Pending', " +
                     "note TEXT, " +
                     "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
                     "FOREIGN KEY(user_id) REFERENCES " + TABLE_USERS + "(user_id) ON DELETE CASCADE, " +
-                    "FOREIGN KEY(field_id) REFERENCES " + TABLE_FIELDS + "(field_id) ON DELETE CASCADE" +
+                    "FOREIGN KEY(field_id) REFERENCES " + TABLE_FIELDS + "(field_id) ON DELETE CASCADE," +
+                    "FOREIGN KEY(payment_id) REFERENCES " + TABLE_PAYMENTS + "(payment_id) ON DELETE CASCADE"+
                     ");";
 
     // ================= CREATE TABLE PAYMENTS =================
