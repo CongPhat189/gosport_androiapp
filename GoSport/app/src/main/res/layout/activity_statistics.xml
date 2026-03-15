@@ -540,44 +540,8 @@
                             android:textStyle="bold"
                             android:paddingStart="10dp" />
 
-                        <!-- Toggle: triệu / nghìn -->
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/toggleRevenueUnit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="28dp"
-                            app:singleSelection="true"
-                            app:selectionRequired="true">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnUnitMillion"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="Triệu"
-                                android:textSize="10sp"
-                                app:cornerRadius="4dp"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnUnitThousand"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="Nghìn"
-                                android:textSize="10sp"
-                                app:cornerRadius="4dp"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
-
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Năm 2025 • Tổng doanh thu: 37,200,000 VNĐ"
-                        android:textColor="#9E9E9E"
-                        android:textSize="11sp"
-                        android:paddingStart="14dp"
-                        android:layout_marginBottom="12dp" />
 
                     <!-- MPAndroidChart BarChart: Doanh thu -->
                     <com.github.mikephil.charting.charts.BarChart

@@ -573,4 +573,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public Cursor getStatBySpecificMonth(int month, int year) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Format tháng thành "01", "02"... để khớp với strftime
+        String monthStr = String.format("%02d", month);
+
+        String query = "SELECT strftime('%m', date) as Month, " +
+                "COUNT(*) as Total, " +
+                "SUM(totalPrice) as Revenue, " +
+                "SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as Completed, " +
+                "SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) as Cancelled " +
+                "FROM Orders " +
+                "WHERE strftime('%Y', date) = ? AND strftime('%m', date) = ? " +
+                "GROUP BY Month";
+
+        return db.rawQuery(query, new String[]{String.valueOf(year), monthStr});
+    }
+
 }

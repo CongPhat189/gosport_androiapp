@@ -97,6 +97,7 @@ public class ReportFragment extends Fragment {
     }
 
     private void loadData(int month, int year) {
+        if (tvSelectedDate == null) return;
         tvSelectedDate.setText("Tháng " + month + ", " + year);
 
         Cursor cursor = dbHelper.getMonthlyDetails(year);
@@ -106,58 +107,57 @@ public class ReportFragment extends Fragment {
 
         double totalRevYear = 0;
         int totalOrdersYear = 0;
-
-        // Biến để tìm tháng cao nhất thực tế
-        double maxRevInYear = -1;
-        String monthWithMaxRev = "N/A";
+        double maxRevInYear = 0;
+        String monthWithMaxRev = "Không có";
         int ordersInMaxMonth = 0;
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                String m = cursor.getString(0);
-                int count = cursor.getInt(1);
-                double rev = cursor.getDouble(2);
-                int comp = cursor.getInt(3);
-                int canc = cursor.getInt(4);
+                try {
+                    String mStr = cursor.getString(0);
+                    int mInt = Integer.parseInt(mStr);
+                    int count = cursor.getInt(1);
+                    double rev = cursor.getDouble(2); // Lấy giá trị gốc từ DB
+                    int comp = cursor.getInt(3);
+                    int canc = cursor.getInt(4);
 
-                totalOrdersYear += count;
-                totalRevYear += rev;
+                    statList.add(new StatModel(mStr, count, rev, comp));
+                    totalOrdersYear += count;
+                    totalRevYear += rev;
 
-                // Thuật toán tìm tháng có doanh thu đỉnh nhất
-                if (rev > maxRevInYear) {
-                    maxRevInYear = rev;
-                    monthWithMaxRev = "Tháng " + m;
-                    ordersInMaxMonth = count;
-                }
+                    if (rev > maxRevInYear) {
+                        maxRevInYear = rev;
+                        monthWithMaxRev = "Tháng " + mStr;
+                        ordersInMaxMonth = count;
+                    }
 
-                statList.add(new StatModel(m, count, rev));
-                float x = Float.parseFloat(m);
-                revenueEntries.add(new BarEntry(x, (float) (rev / 1000000)));
-                statusEntries.add(new BarEntry(x, new float[]{comp, canc}));
+                    // CHỈ vẽ lên biểu đồ tháng được chọn
+                    if (mInt == month) {
+                        // Vẽ giá trị thực tế lên biểu đồ (không chia triệu)
+                        revenueEntries.add(new BarEntry(1f, (float) rev));
+                        statusEntries.add(new BarEntry(1f, new float[]{comp, canc}));
+                    }
+                } catch (Exception e) { e.printStackTrace(); }
             } while (cursor.moveToNext());
             cursor.close();
         }
 
-        // --- GÁN DỮ LIỆU ĐỂ XÓA THÔNG TIN RÁC ---
-
-        // 1. Cập nhật "Tháng cao nhất" dựa trên dữ liệu thật vừa tìm được
-        tvBestMonth.setText(monthWithMaxRev);
-        tvBestMonthDetail.setText(ordersInMaxMonth + " đơn • " + String.format("%.1ftr VNĐ", maxRevInYear / 1000000));
-
-        // 2. Cập nhật các KPI tổng
+        // --- CẬP NHẬT UI VỚI ĐỊNH DẠNG NGHÌN (XÓA ĐƠN VỊ TRIỆU) ---
         tvTotalOrders.setText(String.valueOf(totalOrdersYear));
-        tvTotalRevenue.setText(String.format("%.1ftr", totalRevYear / 1000000));
+        tvTotalRevenue.setText(String.format("%,.0fđ", totalRevYear)); // Định dạng: 37.200.000đ
 
-        // 3. Cập nhật Trung bình tháng
+        tvBestMonth.setText(monthWithMaxRev);
+        tvBestMonthDetail.setText(ordersInMaxMonth + " đơn • " + String.format("%,.0fđ", maxRevInYear));
+
         tvAvgOrders.setText(String.format("%.1f đơn", (double) totalOrdersYear / 12));
-        tvAvgRevenue.setText(String.format("%.1ftr VNĐ / tháng", (totalRevYear / 12) / 1000000));
+        tvAvgRevenue.setText(String.format("%,.0fđ / tháng", totalRevYear / 12));
 
-        // 4. Cập nhật tiêu đề trong Card
-        tvOrderHeader.setText("Dữ liệu năm " + year + " • Tổng " + totalOrdersYear + " đơn");
-        tvRevenueHeader.setText("Dữ liệu năm " + year + " • Doanh thu: " + String.format("%,.0f", totalRevYear) + "đ");
+        tvOrderHeader.setText("Dữ liệu năm " + year);
+        tvRevenueHeader.setText("Doanh thu tháng " + month + "/" + year);
 
         rvOrders.setAdapter(new StatAdapter(statList, false));
         rvRevenue.setAdapter(new StatAdapter(statList, true));
+
         updateCharts(revenueEntries, statusEntries);
     }
 
@@ -194,14 +194,43 @@ public class ReportFragment extends Fragment {
     }
 
     private void updateCharts(List<BarEntry> revEntries, List<BarEntry> statusEntries) {
-        BarDataSet revSet = new BarDataSet(revEntries, "Doanh thu (Triệu VNĐ)");
+        if (revEntries.isEmpty()) {
+            barChartRevenue.clear();
+            return;
+        }
+
+        BarDataSet revSet = new BarDataSet(revEntries, "Doanh thu (VNĐ)");
         revSet.setColor(Color.parseColor("#388E3C"));
+        revSet.setValueTextSize(10f);
+        // Format con số trên đầu cột biểu đồ sang định dạng nghìn
+        revSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format("%,.0f", value);
+            }
+        });
+
         barChartRevenue.setData(new BarData(revSet));
+        barChartRevenue.getXAxis().setDrawLabels(false);
+        barChartRevenue.getAxisLeft().setDrawLabels(false); // Ẩn trục dọc vì số quá dài
         barChartRevenue.invalidate();
 
+        // --- Cấu hình Biểu đồ Trạng thái (Tỉ lệ hoàn thành) ---
         BarDataSet statusSet = new BarDataSet(statusEntries, "");
-        statusSet.setColors(Color.parseColor("#1B5E20"), Color.parseColor("#F57F17"));
-        barChartStatus.setData(new BarData(statusSet));
+        statusSet.setColors(new int[]{Color.parseColor("#1B5E20"), Color.parseColor("#F57F17")});
+        statusSet.setStackLabels(new String[]{"Thành công", "Đã hủy"});
+        statusSet.setValueTextColor(Color.WHITE);
+        statusSet.setValueTextSize(12f);
+
+        BarData statusData = new BarData(statusSet);
+        barChartStatus.setData(statusData);
+
+        XAxis xAxisStatus = barChartStatus.getXAxis();
+        xAxisStatus.setDrawLabels(false);
+        xAxisStatus.setDrawGridLines(false);
+
+        barChartStatus.setFitBars(true);
+        barChartStatus.animateY(1000);
         barChartStatus.invalidate();
     }
 
