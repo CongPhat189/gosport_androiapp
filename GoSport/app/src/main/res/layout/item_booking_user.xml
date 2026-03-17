@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- item_order_user.xml — dùng trong RecyclerView của User -->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,7 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header Strip -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,6 +26,7 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
+                android:src="@drawable/baseline_receipt_long_24"
                 app:tint="#A5D6A7" />
 
             <TextView
@@ -41,7 +40,6 @@
                 android:fontFamily="monospace"
                 android:paddingStart="6dp" />
 
-            <!-- Status Badge -->
             <TextView
                 android:id="@+id/tvOrderStatus"
                 android:layout_width="wrap_content"
@@ -55,14 +53,12 @@
 
         </LinearLayout>
 
-        <!-- Order Body -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="14dp">
 
-            <!-- Service Name -->
             <TextView
                 android:id="@+id/tvServiceName"
                 android:layout_width="wrap_content"
@@ -72,14 +68,12 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#F0F0F0"
                 android:layout_marginVertical="10dp" />
 
-            <!-- Date & Time Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,10 +110,8 @@
                     android:textColor="#424242"
                     android:textSize="13sp"
                     android:paddingStart="6dp" />
-
             </LinearLayout>
 
-            <!-- Location Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,17 +134,43 @@
                     android:paddingStart="6dp"
                     android:ellipsize="end"
                     android:maxLines="1" />
-
             </LinearLayout>
 
-            <!-- Divider -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    app:tint="#2E7D32"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thanh toán: "
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    android:paddingStart="6dp" />
+
+                <TextView
+                    android:id="@+id/tvPaymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#1B5E20"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#F0F0F0"
                 android:layout_marginVertical="8dp" />
 
-            <!-- Footer: Price + Date Created -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -178,9 +196,6 @@
                     android:textSize="11sp" />
 
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

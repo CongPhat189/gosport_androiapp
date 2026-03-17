@@ -10,7 +10,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gosport.R;
 import com.example.gosport.model.BookingModel;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.ViewHolder> {
 
@@ -36,9 +39,22 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
         // Đổ dữ liệu dựa trên ID XML mới
         holder.tvOrderCode.setText(booking.orderCode);
         holder.tvServiceName.setText(booking.fieldName);
-        holder.tvOrderDate.setText(booking.startTime.split(" ")[0]); // Lấy phần Ngày
+        if (booking.startTime != null) {
+            holder.tvOrderDate.setText(formatDate(booking.startTime));
+        } // Lấy phần Ngày
         holder.tvOrderTime.setText(booking.startTime.split(" ")[1]); // Lấy phần Giờ
         holder.tvOrderPrice.setText(String.format("%,.0f VNĐ", booking.totalPrice));
+        holder.tvOrderLocation.setText(booking.address);
+
+        if (booking.paymentMethod != null) {
+            holder.tvPaymentMethod.setText(booking.paymentMethod);
+        } else {
+            holder.tvPaymentMethod.setText("Chưa xác định");
+        }
+
+        if (booking.createdAt != null) {
+            holder.tvCreatedAt.setText("Đặt lúc: " + formatDateTime(booking.createdAt));
+        }
 
         // Trạng thái đơn hàng
         holder.tvOrderStatus.setText(translateStatus(booking.status));
@@ -70,11 +86,37 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
         return "Đã hủy";
     }
 
+    private String formatDateTime(String dateStr) {
+        try {
+            // Định dạng gốc của SQLite
+            SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            // Định dạng mong muốn: 15/01/2025 08:30
+            SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+            return sdfOut.format(sdfIn.parse(dateStr));
+        } catch (Exception e) {
+            return dateStr; // Nếu lỗi thì trả về chuỗi gốc để không bị crash
+        }
+    }
+
+    private String formatDate(String dateStr) {
+        try {
+            // Định dạng gốc của SQLite
+            SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            // Định dạng mong muốn: 15/01/2025 08:30
+            SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+            return sdfOut.format(sdfIn.parse(dateStr));
+        } catch (Exception e) {
+            return dateStr; // Nếu lỗi thì trả về chuỗi gốc để không bị crash
+        }
+    }
+
     @Override
     public int getItemCount() { return list.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderCode, tvOrderStatus, tvServiceName, tvOrderDate, tvOrderTime, tvOrderPrice, tvOrderLocation, tvCreatedAt;
+        TextView tvOrderCode, tvOrderStatus, tvServiceName, tvOrderDate, tvOrderTime, tvOrderPrice, tvOrderLocation, tvCreatedAt, tvPaymentMethod;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +128,7 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
             tvOrderPrice = itemView.findViewById(R.id.tvOrderPrice);
             tvOrderLocation = itemView.findViewById(R.id.tvOrderLocation);
             tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
+            tvPaymentMethod = itemView.findViewById(R.id.tvPaymentMethod);
         }
     }
 }

@@ -11,9 +11,12 @@ public class BookingModel {
     public String userPhone;
     public String fieldName;
     public String startTime;
+    public String paymentMethod;
     public String endTime;
     public double totalPrice;
     public String status;
+    public String address;
+    public String createdAt;
 
     public BookingModel(Cursor cursor) {
         this.id = cursor.getInt(cursor.getColumnIndexOrThrow("booking_id"));
@@ -21,6 +24,8 @@ public class BookingModel {
         this.startTime = cursor.getString(cursor.getColumnIndexOrThrow("start_time"));
         this.totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("total_price"));
         this.status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+        this.paymentMethod = cursor.getString(cursor.getColumnIndexOrThrow("payment_method"));
+        this.address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
 
         // Kiểm tra cột trước khi lấy - Giúp dùng chung an toàn
         int fieldNameIdx = cursor.getColumnIndex("field_name");
@@ -31,6 +36,10 @@ public class BookingModel {
 
         int userPhoneIdx = cursor.getColumnIndex("phone_number");
         if (userPhoneIdx != -1) this.userPhone = cursor.getString(userPhoneIdx);
+        int createdAtIdx = cursor.getColumnIndex("created_at");
+        if (createdAtIdx != -1) {
+            this.createdAt = cursor.getString(createdAtIdx);
+        }
     }
 
     // Cần thêm các hàm này để Fragment/Adapter truy cập được

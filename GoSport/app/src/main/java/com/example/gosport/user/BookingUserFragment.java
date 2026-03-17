@@ -1,6 +1,8 @@
 package com.example.gosport.user;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import com.example.gosport.R;
 import com.example.gosport.adapter.BookingUserAdapter;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.model.BookingModel;
+import com.example.gosport.utils.SessionManager;
 import com.google.android.material.chip.ChipGroup;
 
 import java.text.SimpleDateFormat;
@@ -31,19 +34,23 @@ public class BookingUserFragment extends Fragment {
     private BookingUserAdapter adapter;
     private List<BookingModel> bookingList = new ArrayList<>();
     private DatabaseHelper dbHelper;
+    private SessionManager sessionManager;
 
     private TextView tvTotal, tvPending, tvCompleted, tvDateRangeFrom, tvDateRangeTo;
     private LinearLayout layoutDateRange, layoutEmpty;
 
-    // Mặc định xem khoảng rộng (Tất cả)
-    private String dateFrom = "2020-01-01";
-    private String dateTo = "2029-12-31";
-    private int userId = 2; // Giả định ID của người dùng đang đăng nhập (Nguyễn Văn A)
+
+    private String dateFrom;
+    private String dateTo;
+    private int userId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_booking_management_user, container, false);
+
+        sessionManager = new com.example.gosport.utils.SessionManager(getContext());
+        userId = sessionManager.getUserId();
 
         // 1. Ánh xạ View từ XML của bạn
         initViews(view);
