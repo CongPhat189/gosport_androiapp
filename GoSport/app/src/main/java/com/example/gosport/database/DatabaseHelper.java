@@ -89,13 +89,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "end_time TEXT NOT NULL, " +
                     "booking_type TEXT CHECK(booking_type IN ('Daily','Fixed')), " +
                     "total_price REAL CHECK(total_price >= 0), " +
-                    "payment_id INTEGER, "+
                     "status TEXT CHECK(status IN ('Pending','Confirmed','Checkin','Cancelled','Completed')) DEFAULT 'Pending', " +
                     "note TEXT, " +
                     "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
                     "FOREIGN KEY(user_id) REFERENCES " + TABLE_USERS + "(user_id) ON DELETE CASCADE, " +
-                    "FOREIGN KEY(field_id) REFERENCES " + TABLE_FIELDS + "(field_id) ON DELETE CASCADE," +
-                    "FOREIGN KEY(payment_id) REFERENCES " + TABLE_PAYMENTS + "(payment_id) ON DELETE CASCADE"+
+                    "FOREIGN KEY(field_id) REFERENCES " + TABLE_FIELDS + "(field_id) ON DELETE CASCADE" +
                     ");";
 
     // ================= CREATE TABLE PAYMENTS =================
@@ -200,7 +198,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         field3.put("price_per_hour", 400000);
         field3.put("status", "Maintenance");
         field3.put("image_url", "");
-        long fieldId = db.insert(TABLE_FIELDS, null, field3);
+        db.insert(TABLE_FIELDS, null, field3);
+
+
 
         // ===== SEED USER =====
         ContentValues user1 = new ContentValues();
@@ -211,7 +211,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         user1.put(USER_ROLE, "USER");
         user1.put(USER_IS_ACTIVE, 1);
         user1.put(USER_IS_DELETED, 0);
-        long userId = db.insert(TABLE_USERS, null, user1);
+        db.insert(TABLE_USERS, null, user1);
+
+        ContentValues user2 = new ContentValues();
+        user2.put(USER_FULL_NAME, "Nguyễn Văn B");
+        user2.put(USER_EMAIL, "user2@gosport.com");
+        user2.put(USER_PHONE, "0988888212");
+        user2.put(USER_PASSWORD, hashPassword("User123"));
+        user2.put(USER_ROLE, "USER");
+        user2.put(USER_IS_ACTIVE, 1);
+        user2.put(USER_IS_DELETED, 0);
+        db.insert(TABLE_USERS, null, user2);
 
 
         // ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
@@ -256,6 +266,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         b4.put("total_price", 800000);
         b4.put("status", "Cancelled");
         db.insert(TABLE_BOOKINGS, null, b4);
+
+        ContentValues pay1 = new ContentValues();
+        pay1.put("booking_id", 1);
+        pay1.put("amount", 100000);
+        pay1.put("payment_method", "CASH");
+        pay1.put("payment_status", "FINISH");
+        db.insert(TABLE_PAYMENTS, null, pay1);
+
+        ContentValues pay4 = new ContentValues();
+        pay4.put("booking_id", 4);
+        pay4.put("amount", 100000);
+        pay4.put("payment_method", "E-Wallet");
+        pay4.put("payment_status", "FINISH");
+        db.insert(TABLE_PAYMENTS, null, pay4);
+
+        ContentValues pay2 = new ContentValues();
+        pay2.put("booking_id", 2);
+        pay2.put("amount", 100000);
+        pay2.put("payment_method", "CASH");
+        pay2.put("payment_status", "FINISH");
+        db.insert(TABLE_PAYMENTS, null, pay2);
+
+        ContentValues pay3 = new ContentValues();
+        pay3.put("booking_id", 3);
+        pay3.put("amount", 100000);
+        pay3.put("payment_method", "E-Wallet");
+        pay3.put("payment_status", "FINISH");
+        db.insert(TABLE_PAYMENTS, null, pay3);
     }
 
     @Override
@@ -523,8 +561,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getBookingsUserFiltered(int userId, String from, String to) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT b.*, f.field_name FROM bookings b JOIN fields f ON b.field_id = f.field_id WHERE b.user_id = ? AND date(b.start_time) BETWEEN date(?) AND date(?) ORDER BY b.start_time DESC",
-                new String[]{String.valueOf(userId), from, to});
+
+        // Thêm b.created_at vào danh sách SELECT
+        String baseQuery = "SELECT b.*, f.field_name, f.address, p.payment_method, b.created_at " +
+                "FROM bookings b " +
+                "JOIN fields f ON b.field_id = f.field_id " +
+                "LEFT JOIN payments p ON b.booking_id = p.booking_id " +
+                "WHERE b.user_id = ? ";
+
+        if (from == null || to == null) {
+            return db.rawQuery(baseQuery + "ORDER BY b.created_at DESC", // Sắp xếp theo đơn mới nhất
+                    new String[]{String.valueOf(userId)});
+        } else {
+            return db.rawQuery(baseQuery + "AND date(b.start_time) BETWEEN date(?) AND date(?) " +
+                            "ORDER BY b.created_at DESC",
+                    new String[]{String.valueOf(userId), from, to});
+        }
     }
 
     // 1. Lấy dữ liệu thống kê tổng hợp theo năm
