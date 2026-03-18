@@ -11,6 +11,7 @@ import com.example.gosport.R;
 import com.example.gosport.model.FieldModel;
 import com.example.gosport.user.FieldDetailActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
@@ -66,7 +67,7 @@ public class FieldAdapterUser extends BaseAdapter {
         status.setText("Trạng thái: " + field.getStatus());
         address.setText("Địa chỉ: " + field.getAddress());
         Glide.with(context)
-                .load(field.getImageUrl())
+                .load(new File(field.getImageUrl()))
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(img);
 

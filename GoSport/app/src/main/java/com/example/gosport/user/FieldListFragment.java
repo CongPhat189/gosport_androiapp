@@ -103,8 +103,12 @@ public class FieldListFragment extends Fragment {
                 String address = cursor.getString(4);
                 String description = cursor.getString(5);
                 double pricePerHour = cursor.getDouble(6);
-                String status = cursor.getString(7);
+                String status = cursor.getString(7) ;
                 String imageUrl = cursor.getString(8);
+
+                if (!"available".equalsIgnoreCase(status)) {
+                    continue; 
+                }
 
                 FieldModel field = new FieldModel(
                         fieldId,
