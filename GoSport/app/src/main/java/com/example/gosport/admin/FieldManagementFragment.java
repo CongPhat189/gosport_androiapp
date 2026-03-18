@@ -17,6 +17,9 @@ import com.example.gosport.adapter.FieldAdapterUser;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.model.FieldModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -34,6 +37,8 @@ public class FieldManagementFragment extends Fragment {
     private static final int PICK_IMAGE = 1;
 
     int selectedFilterCategoryId = -1;
+
+    ImageView imgPreviewDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -222,6 +227,8 @@ public class FieldManagementFragment extends Fragment {
         EditText edtPrice = dialogView.findViewById(R.id.edtPrice);
         ImageView img = dialogView.findViewById(R.id.imgPreview);
 
+        imgPreviewDialog = img;
+
         loadCategoryToSpinner(spCategory, -1);
 
         img.setOnClickListener(v -> {
@@ -241,6 +248,10 @@ public class FieldManagementFragment extends Fragment {
 
                     int categoryId = ids.get(position);
 
+                    String imagePath = selectedImageUri != null
+                            ? saveImageToInternalStorage(selectedImageUri)
+                            : null;
+
                     db.insertField(
                             categoryId,
                             edtName.getText().toString(),
@@ -248,8 +259,7 @@ public class FieldManagementFragment extends Fragment {
                             edtDesc.getText().toString(),
                             Double.parseDouble(edtPrice.getText().toString()),
                             "Available",
-                            selectedImageUri != null ?
-                                    selectedImageUri.toString() : null
+                            imagePath
                     );
 
                     loadFields();
@@ -257,6 +267,7 @@ public class FieldManagementFragment extends Fragment {
                 .setNegativeButton("Hủy", null)
                 .show();
     }
+
 
     // ================= UPDATE FIELD =================
     private void showUpdateDialog(FieldModel field) {
@@ -273,10 +284,21 @@ public class FieldManagementFragment extends Fragment {
         EditText edtPrice = dialogView.findViewById(R.id.edtPrice);
         ImageView img = dialogView.findViewById(R.id.imgPreview);
 
+        imgPreviewDialog = img;
+
         edtName.setText(field.getFieldName());
         edtAddress.setText(field.getAddress());
         edtDesc.setText(field.getDescription());
         edtPrice.setText(String.valueOf(field.getPricePerHour()));
+
+        // hiển thị ảnh cũ nếu có
+        if (field.getImageUrl() != null) {
+            try {
+                img.setImageURI(Uri.fromFile(new File(field.getImageUrl())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         loadCategoryToSpinner(spCategory, field.getCategoryId());
 
@@ -297,6 +319,10 @@ public class FieldManagementFragment extends Fragment {
 
                     int categoryId = ids.get(position);
 
+                    String imagePath = selectedImageUri != null
+                            ? saveImageToInternalStorage(selectedImageUri)
+                            : field.getImageUrl();
+
                     db.updateField(
                             field.getFieldId(),
                             categoryId,
@@ -305,9 +331,7 @@ public class FieldManagementFragment extends Fragment {
                             edtDesc.getText().toString(),
                             Double.parseDouble(edtPrice.getText().toString()),
                             field.getStatus(),
-                            selectedImageUri != null ?
-                                    selectedImageUri.toString() :
-                                    field.getImageUrl()
+                            imagePath
                     );
 
                     loadFields();
@@ -315,6 +339,39 @@ public class FieldManagementFragment extends Fragment {
                 .setNegativeButton("Hủy", null)
                 .show();
     }
+
+
+    private String saveImageToInternalStorage(Uri uri) {
+        try {
+            InputStream inputStream = getContext()
+                    .getContentResolver()
+                    .openInputStream(uri);
+
+            File file = new File(
+                    getContext().getFilesDir(),
+                    "img_" + System.currentTimeMillis() + ".jpg"
+            );
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+            return file.getAbsolutePath();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -324,6 +381,11 @@ public class FieldManagementFragment extends Fragment {
                 data != null) {
 
             selectedImageUri = data.getData();
+
+            // 🔥 HIỂN THỊ PREVIEW
+            if (imgPreviewDialog != null) {
+                imgPreviewDialog.setImageURI(selectedImageUri);
+            }
         }
     }
 }

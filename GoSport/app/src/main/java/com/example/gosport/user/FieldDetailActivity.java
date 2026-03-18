@@ -234,9 +234,11 @@ public class FieldDetailActivity extends AppCompatActivity {
             cardStatusBadge.setCardBackgroundColor(Color.parseColor("#FFEBEE"));
 
             // Disable booking completely
-            btnBook.setEnabled(false);
+            btnBook.setEnabled(true);
             btnBook.setAlpha(0.5f);
             btnBook.setText("Hiện tại đã hết sân");
+            btnBook.setOnClickListener(v -> finish());
+
         }
     }
 
