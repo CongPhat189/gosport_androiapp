@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    res/layout/item_time_slot.xml
+    Root là MaterialCardView để dễ đổi màu nền trong TimeSlotAdapter.
+    Dùng trong GridLayoutManager 3 cột.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1.5dp">
+
+    <TextView
+        android:id="@+id/tvSlotTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_black"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:text="06:00"
+        android:textColor="#212121"
+        android:textSize="13sp" />
+
+</com.google.android.material.card.MaterialCardView>

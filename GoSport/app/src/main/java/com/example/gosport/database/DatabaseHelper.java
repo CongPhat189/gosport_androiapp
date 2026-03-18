@@ -8,6 +8,9 @@ import android.database.Cursor;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -207,7 +210,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         user1.put(USER_ROLE, "USER");
         user1.put(USER_IS_ACTIVE, 1);
         user1.put(USER_IS_DELETED, 0);
-        db.insert(TABLE_USERS, null, user1);
+        long userId1 = db.insert(TABLE_USERS, null, user1);
+
+        ContentValues review1 = new ContentValues();
+        review1.put("user_id", userId1);
+        review1.put("field_id", 1);
+        review1.put("rating", 5);
+        review1.put("comment", "Sân cực đẹp, cỏ nhân tạo mềm mại và sạch sẽ. Đặt sân nhanh, chủ sân nhiệt tình. Sẽ quay lại!");
+        review1.put("created_at", "2026-03-10 14:30:00");
+        db.insert(TABLE_REVIEWS, null, review1);
+
+        // Review 2: 4 sao
+        ContentValues review2 = new ContentValues();
+        review2.put("user_id", userId1);
+        review2.put("field_id", 1);
+        review2.put("rating", 4);
+        review2.put("comment", "Sân tốt, giá cả hợp lý nhưng đèn hơi tối vào buổi tối.");
+        review2.put("created_at", "2026-03-05 20:15:00");
+        db.insert(TABLE_REVIEWS, null, review2);
+
+        // seed 100+ review
+        for(int i = 0; i < 100; i++) {
+            ContentValues r = new ContentValues();
+            r.put("user_id", userId1);
+            r.put("field_id", 1);
+            r.put("rating", (i % 2 == 0) ? 5 : 4);
+            r.put("comment", "Sân ổn định, chất lượng tốt.");
+            db.insert(TABLE_REVIEWS, null, r);
+        }
 
     }
 
@@ -434,4 +464,190 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(categoryId)});
     }
 
+    // ==========BOOKING================
+    public long insertBooking(int userId,
+                              int fieldId,
+                              String startTime,
+                              String endTime,
+                              String bookingType,
+                              double totalPrice,
+                              String note) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("user_id", userId);
+        values.put("field_id", fieldId);
+        values.put("start_time", startTime);
+        values.put("end_time", endTime);
+        values.put("booking_type", bookingType);
+        values.put("total_price", totalPrice);
+        values.put("status", "Pending");
+        values.put("note", note);
+
+        long result = db.insert(TABLE_BOOKINGS, null, values);
+
+        return result;
+    }
+
+    public boolean cancelBooking(int bookingId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", "Cancelled");
+
+        int result = db.update(TABLE_BOOKINGS,
+                values,
+                "booking_id=?",
+                new String[]{String.valueOf(bookingId)});
+
+        return result > 0;
+    }
+
+    public long insertPayment(int bookingId,
+                              double amount,
+                              String method,
+                              String transactionRef,
+                              String paymentStatus) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("booking_id", bookingId);
+        values.put("amount", amount);
+        if(method.equals("Cash")) {
+            values.put("payment_method", "Cash");
+        } else {
+            values.put("payment_method", "E-Wallet");
+        }
+        values.put("transaction_ref", transactionRef);
+        values.put("payment_status", paymentStatus);
+
+        long result = db.insert(TABLE_PAYMENTS, null, values);
+
+        return result;
+    }
+
+    public boolean confirmBooking(int bookingId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", "Confirmed");
+
+        int result = db.update(TABLE_BOOKINGS,
+                values,
+                "booking_id=?",
+                new String[]{String.valueOf(bookingId)});
+
+        return result > 0;
+    }
+
+    public boolean completeBooking(int bookingId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", "Completed");
+
+        int result = db.update(
+                TABLE_BOOKINGS,
+                values,
+                "booking_id=?",
+                new String[]{String.valueOf(bookingId)}
+        );
+
+        return result > 0;
+    }
+
+    public boolean cancelBookingWithRule(int bookingId, String startTime) {
+
+        try {
+
+            SimpleDateFormat sdf =
+                    new SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss",
+                            Locale.getDefault()
+                    );
+
+            Date bookingDate = sdf.parse(startTime);
+
+            long diff =
+                    bookingDate.getTime() -
+                            System.currentTimeMillis();
+
+            long hours = diff / (1000 * 60 * 60);
+
+            if (hours < 24) {
+                return false;
+            }
+
+            return cancelBooking(bookingId);
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Cursor getBookingsByUser(int userId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT b.booking_id, f.field_name, f.address, " +
+                        "b.start_time, b.end_time, " +
+                        "b.total_price, b.status " +
+                        "FROM " + TABLE_BOOKINGS + " b " +
+                        "INNER JOIN " + TABLE_FIELDS + " f " +
+                        "ON b.field_id = f.field_id " +
+                        "WHERE b.user_id = ? " +
+                        "ORDER BY b.created_at DESC";
+
+        return db.rawQuery(
+                query,
+                new String[]{String.valueOf(userId)}
+        );
+    }
+
+    public Cursor getBookingsForFieldOnDate(int fieldId, String dateString) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT start_time, end_time FROM " + TABLE_BOOKINGS +
+                " WHERE field_id = ? AND start_time LIKE ? AND status != 'Cancelled'";
+
+        return db.rawQuery(query, new String[]{String.valueOf(fieldId), dateString + "%"});
+    }
+
+    // ==========REVIEW================
+    public long insertReview(int userId,
+                             int fieldId,
+                             int rating,
+                             String comment) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("user_id", userId);
+        values.put("field_id", fieldId);
+        values.put("rating", rating);
+        values.put("comment", comment);
+
+        long result = db.insert(TABLE_REVIEWS, null, values);
+
+        db.close();
+        return result;
+    }
+
+    public Cursor getReviewsByField(int fieldId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT r.*, u." + USER_FULL_NAME + " as full_name " +
+                        "FROM " + TABLE_REVIEWS + " r " +
+                        "INNER JOIN " + TABLE_USERS + " u ON r.user_id = u." + USER_ID + " " +
+                        "WHERE r.field_id = ? " +
+                        "ORDER BY r.created_at DESC";
+
+        return db.rawQuery(query, new String[]{String.valueOf(fieldId)});
+    }
 }

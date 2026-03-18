@@ -22,7 +22,7 @@ public class UserActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
 
-    LinearLayout btnViewField, btnProfile, btnLogout;
+    LinearLayout btnViewField, btnProfile, btnLogout, btnMyBookings;
     TextView tvUserName;
 
     SessionManager sessionManager;
@@ -51,6 +51,7 @@ public class UserActivity extends AppCompatActivity {
         btnViewField = findViewById(R.id.btnViewField);
         btnProfile = findViewById(R.id.btnProfile);
         btnLogout = findViewById(R.id.btnLogout);
+        btnMyBookings = findViewById(R.id.btnMyBookings);
 
         if (savedInstanceState == null) {
             loadFragment(new FieldListFragment());
@@ -58,6 +59,13 @@ public class UserActivity extends AppCompatActivity {
 
         btnViewField.setOnClickListener(v -> {
             loadFragment(new FieldListFragment());
+            drawerLayout.closeDrawers();
+        });
+
+        btnMyBookings.setOnClickListener(v -> {
+            Intent intent = new Intent(UserActivity.this, MyBookingsActivity.class);
+            startActivity(intent);
+
             drawerLayout.closeDrawers();
         });
 

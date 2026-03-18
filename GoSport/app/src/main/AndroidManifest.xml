@@ -41,6 +41,14 @@
         <activity
             android:name=".user.FieldDetailActivity"
             android:exported="false" />
+
+        <activity android:name=".user.BookingConfirmActivity" />
+
+        <activity android:name=".user.MyBookingsActivity" />
+
+        <activity android:name=".review.ReviewActivity" />
+
+        <activity android:name=".review.WriteReviewActivity" />
     </application>
 
 </manifest>
