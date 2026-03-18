@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gosport.R;
 import com.example.gosport.model.BookingModel;
@@ -67,6 +66,9 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
             case "Pending":
                 tv.setBackgroundResource(R.drawable.bg_status_badge_orange); // Màu cam
                 break;
+            case "Confirmed":
+                tv.setBackgroundResource(R.drawable.bg_status_badge_pink); // Màu vàng
+                break;
             case "Checkin":
                 tv.setBackgroundResource(R.drawable.bg_status_badge_blue); // Màu xanh dương
                 break;
@@ -74,13 +76,14 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
                 tv.setBackgroundResource(R.drawable.bg_status_badge_green); // Màu xanh lá
                 break;
             default:
-                tv.setBackgroundResource(R.drawable.circle_medium_green); // Màu xám/đỏ
+                tv.setBackgroundResource(R.drawable.bg_status_badge_red); // Màu xám/đỏ
                 break;
         }
     }
 
     private String translateStatus(String status) {
         if (status.equals("Pending")) return "Chờ duyệt";
+        if (status.equals("Confirmed")) return "Đã xác nhận";
         if (status.equals("Checkin")) return "Đã Check-in";
         if (status.equals("Completed")) return "Hoàn thành";
         return "Đã hủy";

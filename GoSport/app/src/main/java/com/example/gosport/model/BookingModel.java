@@ -18,6 +18,8 @@ public class BookingModel {
     public String address;
     public String createdAt;
 
+    public BookingModel() {}
+
     public BookingModel(Cursor cursor) {
         this.id = cursor.getInt(cursor.getColumnIndexOrThrow("booking_id"));
         this.orderCode = "#ORD-2026-" + String.format("%04d", id);
@@ -56,4 +58,14 @@ public class BookingModel {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public String getStartTime(){
+        return startTime;
+    }
+
+    public void setStartTime(String startTime){
+        this.startTime = startTime;
+    }
+
+
 }

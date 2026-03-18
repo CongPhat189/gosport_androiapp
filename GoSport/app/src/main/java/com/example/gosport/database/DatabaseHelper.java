@@ -614,12 +614,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean confirmBooking(int bookingId) {
+    public boolean confirmBankBooking(int bookingId) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("status", "Confirmed");
+
+        int result = db.update(TABLE_BOOKINGS,
+                values,
+                "booking_id=?",
+                new String[]{String.valueOf(bookingId)});
+
+        return result > 0;
+    }
+    public boolean confirmCashBooking(int bookingId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", "Pending");
 
         int result = db.update(TABLE_BOOKINGS,
                 values,

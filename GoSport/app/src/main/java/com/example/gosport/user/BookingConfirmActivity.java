@@ -274,7 +274,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 if (bookingId != -1) {
                     // ===== PAYMENT =====
                     if (selectedPaymentMethod.equals("Cash")) {
-                        dbHelper.confirmBooking((int) bookingId);
+                        dbHelper.confirmCashBooking((int) bookingId);
 
                         dbHelper.insertPayment(
                                 (int) bookingId,
@@ -292,7 +292,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 generatedBookingId,
                                 "Completed"
                         );
-                        dbHelper.confirmBooking((int) bookingId);
+                        dbHelper.confirmBankBooking((int) bookingId);
                     }
                 } else {
                     isSuccess = false;
@@ -303,6 +303,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (isSuccess) {
             Toast.makeText(this, "Đặt sân thành công", Toast.LENGTH_LONG).show();
             finish();
+
+
         } else {
             Toast.makeText(this, "Có lỗi xảy ra khi lưu vào hệ thống", Toast.LENGTH_SHORT).show();
         }
