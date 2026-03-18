@@ -522,10 +522,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getBookingsAdminFiltered(String fromDate, String toDate, String status) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT b.*, u.full_name, u.phone_number, f.field_name " +
+        String query = "SELECT b.*, u.full_name, u.phone_number, f.field_name, f.address, p.payment_method, " +
+                "strftime('%d/%m/%Y', b.start_time) as only_start_date, " +
+                "strftime('%d/%m/%Y %H:%M', b.created_at) as full_created_at " +
                 "FROM bookings b " +
                 "JOIN users u ON b.user_id = u.user_id " +
                 "JOIN fields f ON b.field_id = f.field_id " +
+                "LEFT JOIN payments p ON b.booking_id = p.booking_id " +
                 "WHERE b.start_time >= ? AND b.start_time <= ?";
 
         List<String> args = new ArrayList<>();
@@ -537,7 +540,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             args.add(status);
         }
 
-        query += " ORDER BY b.start_time DESC";
+        query += " ORDER BY b.created_at DESC"; // Sắp xếp theo đơn mới nhất
         return db.rawQuery(query, args.toArray(new String[0]));
     }
 

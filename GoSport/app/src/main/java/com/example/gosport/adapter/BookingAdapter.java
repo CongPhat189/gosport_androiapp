@@ -53,6 +53,16 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
         holder.tvServiceName.setText(booking.fieldName);
         holder.tvPrice.setText(String.format("%,.0fđ", booking.totalPrice));
 
+        if (booking.paymentMethod != null && !booking.paymentMethod.isEmpty()) {
+            // Áp dụng Việt hóa cho phương thức thanh toán
+            String method = booking.paymentMethod.equalsIgnoreCase("Cash") ? "Tiền mặt" : "Ví điện tử";
+            holder.tvPaymentMethod.setText(method);
+            holder.tvPaymentMethod.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvPaymentMethod.setText("Chưa thanh toán");
+            holder.tvPaymentMethod.setVisibility(View.VISIBLE);
+        }
+
         // Tách ngày và giờ từ chuỗi start_time (Giả sử định dạng: YYYY-MM-DD HH:mm)
         String[] dateTime = booking.startTime.split(" ");
         holder.tvDate.setText(dateTime.length > 0 ? dateTime[0] : "");
@@ -126,7 +136,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
     }
 
     public static class AdminViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderCode, tvStatus, tvCustomerName, tvCustomerPhone, tvPrice, tvServiceName, tvDate, tvTime, tvCompletedLabel;
+        TextView tvOrderCode, tvStatus, tvCustomerName, tvCustomerPhone, tvPrice, tvServiceName, tvDate, tvTime, tvCompletedLabel, tvPaymentMethod;
         MaterialButton btnCheckIn, btnComplete;
         LinearLayout layoutActions, layoutCompletedState;
 
@@ -141,6 +151,10 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
             tvDate = itemView.findViewById(R.id.tvAdminDate);
             tvTime = itemView.findViewById(R.id.tvAdminTime);
             tvCompletedLabel = itemView.findViewById(R.id.tvCompletedLabel);
+
+            // ÁNH XẠ ID MỚI Ở ĐÂY
+            tvPaymentMethod = itemView.findViewById(R.id.tvAdminPaymentMethod);
+
             btnCheckIn = itemView.findViewById(R.id.btnCheckIn);
             btnComplete = itemView.findViewById(R.id.btnComplete);
             layoutActions = itemView.findViewById(R.id.layoutAdminActions);
