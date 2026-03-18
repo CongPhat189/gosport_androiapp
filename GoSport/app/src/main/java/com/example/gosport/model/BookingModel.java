@@ -44,5 +44,16 @@ public class BookingModel {
 
     // Cần thêm các hàm này để Fragment/Adapter truy cập được
     public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
     public String getFieldName() { return fieldName; }
+
+    public void setFieldName(String fieldName) { this.fieldName = fieldName; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 }

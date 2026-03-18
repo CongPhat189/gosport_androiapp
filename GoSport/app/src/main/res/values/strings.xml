@@ -2,4 +2,96 @@
     <string name="app_name">GoSport</string>
     <string name="open">Open Drawer</string>
     <string name="close">Close Drawer</string>
+
+    <string name="back">Quay lại</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="field_detail_title">Chi tiết sân</string>
+
+    <!-- Hình ảnh -->
+    <string name="field_image">Ảnh sân bóng</string>
+
+    <!-- Thông tin sân -->
+    <string name="field_name">Tên sân</string>
+    <string name="field_type">Loại sân</string>
+    <string name="field_address">Địa chỉ sân</string>
+    <string name="field_price_format">%1$s / giờ</string>
+    <string name="field_available">✓ Còn sân</string>
+    <string name="field_full">✗ Hết sân</string>
+    <string name="field_description">Mô tả sân</string>
+    <string name="read_more">Xem thêm</string>
+    <string name="collapse">Thu gọn</string>
+
+    <!-- Rating -->
+    <string name="rating_format">%1$.1f</string>
+    <string name="rating_count_format">(%1$d đánh giá)</string>
+    <string name="rating_count_full_format">%1$d đánh giá</string>
+
+    <!-- Loại đặt sân (Tab) -->
+    <string name="booking_type_label">Loại đặt sân</string>
+    <string name="tab_daily">📅 Theo ngày</string>
+    <string name="tab_fixed">🔄 Cố định</string>
+
+    <!-- Lịch -->
+    <string name="select_date_label">Chọn ngày</string>
+    <string name="prev_month">Tháng trước</string>
+    <string name="next_month">Tháng sau</string>
+    <string name="month_year_format">Tháng %1$d, %2$d</string>
+
+    <!-- Chú thích lịch -->
+    <string name="legend_selected">Đã chọn</string>
+    <string name="legend_today">Hôm nay</string>
+    <string name="legend_has_booking">Có lịch</string>
+
+    <!-- Ngày trong tuần (header lịch) -->
+    <string name="day_sun">CN</string>
+    <string name="day_mon">T2</string>
+    <string name="day_tue">T3</string>
+    <string name="day_wed">T4</string>
+    <string name="day_thu">T5</string>
+    <string name="day_fri">T6</string>
+    <string name="day_sat">T7</string>
+
+    <!-- Khung giờ -->
+    <string name="select_time_label_format">Chọn giờ — %1$s</string>
+    <string name="slot_available">Còn trống</string>
+    <string name="slot_selected">Đã chọn ✓</string>
+    <string name="slot_booked">Đã đặt</string>
+
+    <!-- Chú thích slot -->
+    <string name="legend_slot_available">Còn trống</string>
+    <string name="legend_slot_selected">Đã chọn</string>
+    <string name="legend_slot_booked">Đã đặt</string>
+
+    <!-- Section đánh giá -->
+    <string name="reviews_label">Đánh giá sân</string>
+    <string name="see_all_reviews">Xem tất cả →</string>
+    <string name="verified_review">✓ Đã xác minh</string>
+
+    <!-- Bottom bar: thông tin đã chọn -->
+    <string name="selected_date_format">%1$s</string>
+    <string name="selected_time_format">%1$s – %2$s</string>
+    <string name="selected_price_format">%1$s</string>
+
+    <!-- Nút hành động -->
+    <string name="btn_confirm_booking">⚽ Xác nhận đặt sân</string>
+    <string name="btn_get_directions">🗺️ Chỉ đường</string>
+
+    <!-- Lỗi / trạng thái -->
+    <string name="error_select_date">Vui lòng chọn ngày trước</string>
+    <string name="error_select_time">Vui lòng chọn giờ trước</string>
+    <string name="error_slot_unavailable">Khung giờ này đã được đặt</string>
+    <string name="loading">Đang tải...</string>
+    <string name="no_slots_available">Không còn khung giờ trống cho ngày này</string>
+
+    <!-- Content descriptions (accessibility) -->
+    <string name="cd_back_button">Quay lại</string>
+    <string name="cd_favorite_button">Thêm vào yêu thích</string>
+    <string name="cd_field_image">Hình ảnh sân bóng</string>
+    <string name="cd_prev_month">Tháng trước</string>
+    <string name="cd_next_month">Tháng sau</string>
+    <string name="cd_category_icon">Loại sân</string>
+    <string name="cd_location_icon">Địa chỉ</string>
+    <string name="cd_star_icon">Đánh giá sao</string>
+    <string name="cd_calendar_icon">Ngày đã chọn</string>
+    <string name="cd_clock_icon">Giờ đã chọn</string>
 </resources>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_review_card.xml
+    Item đánh giá trong RecyclerView rvReviewsPreview.
+    Màu gán cứng, không cần drawable ngoài.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Header: Avatar + Tên + Ngày + Sao + Verified -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <!-- Avatar chữ cái viết tắt -->
+            <TextView
+                android:id="@+id/tvReviewerAvatar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="#1B5E20"
+                android:text="TM"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginEnd="10dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvReviewerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trần Minh Đức"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvReviewDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10 tháng 3, 2026"
+                    android:textColor="#9E9E9E"
+                    android:textSize="11sp"
+                    android:layout_marginTop="1dp" />
+
+                <!-- 5 sao -->
+                <LinearLayout
+                    android:id="@+id/layoutStars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="3dp">
+
+                    <ImageView android:layout_width="13dp" android:layout_height="13dp" android:src="@drawable/ic_star_filled" app:tint="#FFD600" android:contentDescription="@null" />
+                    <ImageView android:layout_width="13dp" android:layout_height="13dp" android:src="@drawable/ic_star_filled" app:tint="#FFD600" android:contentDescription="@null" android:layout_marginStart="1dp" />
+                    <ImageView android:layout_width="13dp" android:layout_height="13dp" android:src="@drawable/ic_star_filled" app:tint="#FFD600" android:contentDescription="@null" android:layout_marginStart="1dp" />
+                    <ImageView android:layout_width="13dp" android:layout_height="13dp" android:src="@drawable/ic_star_filled" app:tint="#FFD600" android:contentDescription="@null" android:layout_marginStart="1dp" />
+                    <ImageView android:layout_width="13dp" android:layout_height="13dp" android:src="@drawable/ic_star_filled" app:tint="#FFD600" android:contentDescription="@null" android:layout_marginStart="1dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Badge xác minh -->
+            <TextView
+                android:id="@+id/tvVerified"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✓ Đã xác minh"
+                android:textColor="#4C8C4A"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!-- Nội dung đánh giá -->
+        <TextView
+            android:id="@+id/tvReviewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sân cực đẹp, cỏ nhân tạo mềm mại và sạch sẽ. Chủ sân nhiệt tình. Sẽ quay lại!"
+            android:textColor="#212121"
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.5" />
+
+        <!-- Tags (ChipGroup) -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:chipSpacingHorizontal="4dp"
+            app:chipSpacingVertical="4dp">
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌿 Sân sạch"
+                android:textColor="#1B5E20"
+                android:textSize="11sp"
+                app:chipBackgroundColor="#E8F5E9"
+                app:chipStrokeWidth="0dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💡 Đèn tốt"
+                android:textColor="#1B5E20"
+                android:textSize="11sp"
+                app:chipBackgroundColor="#E8F5E9"
+                app:chipStrokeWidth="0dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👍 Dịch vụ tốt"
+                android:textColor="#1B5E20"
+                android:textSize="11sp"
+                app:chipBackgroundColor="#E8F5E9"
+                app:chipStrokeWidth="0dp"
+                android:clickable="false"
+                android:focusable="false" />
+        </com.google.android.material.chip.ChipGroup>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

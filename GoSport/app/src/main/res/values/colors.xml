@@ -6,6 +6,69 @@
     <color name="primary_light_green">#4C8C4A</color>
     <color name="background_gray">#F5F5F5</color> <!-- Màu nền xám nhạt để nổi bật thẻ trắng -->
     <color name="text_color_dark">#212121</color>
+    <!-- Text phụ, placeholder, icon mờ -->
+    <color name="text_color_muted">#757575</color>
+    <!-- Text rất nhạt (disabled, hint) -->
+    <color name="text_color_light">#9E9E9E</color>
+
+    <!-- Nền card trắng -->
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Viền / divider -->
+    <color name="divider_color">#EEEEEE</color>
+    <color name="border_color">#E0E0E0</color>
+
+    <!-- Rating sao -->
+    <color name="star_yellow">#FFD600</color>
+
+    <!-- Badge "Còn sân" -->
+    <color name="badge_green_bg">#E8F5E9</color>
+    <color name="badge_green_text">#2E7D32</color>
+
+    <!-- Nút xanh lá đậm khi nhấn -->
+    <color name="primary_dark_green_pressed">#145214</color>
+
+    <!-- Slot thời gian đã chọn -->
+    <color name="slot_selected_bg">#E8F5E9</color>
+    <color name="slot_selected_border">#1B5E20</color>
+
+    <!-- Slot thời gian đã đặt (mờ) -->
+    <color name="slot_booked_bg">#F5F5F5</color>
+    <color name="slot_booked_text">#BDBDBD</color>
+
+    <!-- Chỉ đường (màu xanh dương) -->
+    <color name="blue_direction">#1565C0</color>
+    <color name="blue_direction_bg">#E3F2FD</color>
+
+    <!-- Ngày hôm nay trong lịch -->
+    <color name="calendar_today_bg">#E8F5E9</color>
+    <color name="calendar_today_border">#4C8C4A</color>
+    <color name="calendar_today_text">#1B5E20</color>
+
+    <!-- Ngày đã chọn trong lịch -->
+    <color name="calendar_selected_bg">#1B5E20</color>
+    <color name="calendar_selected_text">#FFFFFF</color>
+
+    <!-- Ngày disabled (quá khứ) trong lịch -->
+    <color name="calendar_disabled_text">#BDBDBD</color>
+
+    <!-- Overlay ảnh sân -->
+    <color name="image_overlay_start">#00000000</color>
+    <color name="image_overlay_end">#88000000</color>
+
+    <!-- Thanh rating progress -->
+    <color name="rating_bar_track">#EEEEEE</color>
+    <color name="rating_bar_fill">#4C8C4A</color>
+
+    <!-- Tab container (nền xám) -->
+    <color name="tab_container_bg">#EEEEEE</color>
+
+    <!-- Chip tag đánh giá -->
+    <color name="chip_review_bg">#E8F5E9</color>
+    <color name="chip_review_text">#1B5E20</color>
+
+    <!-- Màu xác nhận / verified -->
+    <color name="verified_text">#4C8C4A</color>
 
     <color name="primary_green">#2E7D32</color>
     <color name="light_green">#388E3C</color>
