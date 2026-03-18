@@ -53,10 +53,20 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
         holder.tvServiceName.setText(booking.fieldName);
         holder.tvPrice.setText(String.format("%,.0fđ", booking.totalPrice));
 
+        if (booking.paymentMethod != null && !booking.paymentMethod.isEmpty()) {
+            // Áp dụng Việt hóa cho phương thức thanh toán
+            String method = booking.paymentMethod.equalsIgnoreCase("Cash") ? "Tiền mặt" : "Ví điện tử";
+            holder.tvPaymentMethod.setText(method);
+            holder.tvPaymentMethod.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvPaymentMethod.setText("Chưa thanh toán");
+            holder.tvPaymentMethod.setVisibility(View.VISIBLE);
+        }
+
         // Tách ngày và giờ từ chuỗi start_time (Giả sử định dạng: YYYY-MM-DD HH:mm)
-        String[] dateTime = booking.startTime.split(" ");
-        holder.tvDate.setText(dateTime.length > 0 ? dateTime[0] : "");
-        holder.tvTime.setText(dateTime.length > 1 ? dateTime[1] : "");
+        holder.tvDate.setText(getFormattedDate(booking.startTime));
+        holder.tvTime.setText(getFormattedTime(booking.startTime));
+        holder.tvAddress.setText(booking.address);
 
         // 2. Xử lý Logic ẩn hiện nút bấm & Trạng thái hoàn thành
         updateUIBasedOnStatus(holder, booking.status);
@@ -125,8 +135,41 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
         return bookingList.size();
     }
 
+    private String getFormattedDate(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.isEmpty()) return "";
+        try {
+            // Nếu bạn đã dùng strftime trong SQL trả về dd/MM/yyyy thì chỉ cần split lấy phần đầu
+            // Nếu SQL trả về yyyy-MM-dd HH:mm:ss thì dùng logic dưới đây
+            String[] parts = dateTimeStr.split(" ");
+            String datePart = parts[0];
+
+            if (datePart.contains("-")) { // Định dạng yyyy-MM-dd
+                String[] ymd = datePart.split("-");
+                return ymd[2] + "/" + ymd[1] + "/" + ymd[0];
+            }
+            return datePart; // Trả về dd/MM/yyyy nếu SQL đã format sẵn
+        } catch (Exception e) {
+            return dateTimeStr;
+        }
+    }
+
+    private String getFormattedTime(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.isEmpty()) return "";
+        try {
+            String[] parts = dateTimeStr.split(" ");
+            if (parts.length > 1) {
+                // Lấy HH:mm:ss và cắt bỏ :ss nếu có
+                String time = parts[1];
+                return time.length() > 5 ? time.substring(0, 5) : time;
+            }
+        } catch (Exception e) {
+            return "";
+        }
+        return "";
+    }
+
     public static class AdminViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderCode, tvStatus, tvCustomerName, tvCustomerPhone, tvPrice, tvServiceName, tvDate, tvTime, tvCompletedLabel;
+        TextView tvOrderCode, tvStatus, tvAddress, tvCustomerName, tvCustomerPhone, tvPrice, tvServiceName, tvDate, tvTime, tvCompletedLabel, tvPaymentMethod;
         MaterialButton btnCheckIn, btnComplete;
         LinearLayout layoutActions, layoutCompletedState;
 
@@ -141,10 +184,15 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.AdminVie
             tvDate = itemView.findViewById(R.id.tvAdminDate);
             tvTime = itemView.findViewById(R.id.tvAdminTime);
             tvCompletedLabel = itemView.findViewById(R.id.tvCompletedLabel);
+
+            // ÁNH XẠ ID MỚI Ở ĐÂY
+            tvPaymentMethod = itemView.findViewById(R.id.tvAdminPaymentMethod);
+
             btnCheckIn = itemView.findViewById(R.id.btnCheckIn);
             btnComplete = itemView.findViewById(R.id.btnComplete);
             layoutActions = itemView.findViewById(R.id.layoutAdminActions);
             layoutCompletedState = itemView.findViewById(R.id.layoutCompletedState);
+            tvAddress = itemView.findViewById(R.id.tvAdminAddress);
         }
     }
 }
