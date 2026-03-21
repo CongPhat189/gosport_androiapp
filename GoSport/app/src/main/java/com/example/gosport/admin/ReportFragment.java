@@ -74,7 +74,7 @@ public class ReportFragment extends Fragment {
         tvTotalOrders = v.findViewById(R.id.tvTotalOrdersYear);
         tvTotalRevenue = v.findViewById(R.id.tvTotalRevenueYear);
 
-        // Ánh xạ 2 ô đang bị lỗi hiển thị "Tháng 8"
+
         tvBestMonth = v.findViewById(R.id.tvBestMonth);
         tvBestMonthDetail = v.findViewById(R.id.tvBestMonthOrders);
 

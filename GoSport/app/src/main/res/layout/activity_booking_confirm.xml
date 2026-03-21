@@ -313,23 +313,16 @@
                     android:textColor="#757575"
                     android:fontFamily="@font/nunito_bold"
                     android:textSize="14sp"
-                    android:layout_marginBottom="12dp"/>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="4dp"
-                    app:strokeColor="#2f5d28">
-                    <ImageView
-                        android:id="@+id/imgQRCode"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_calendar"
-                        android:scaleType="centerCrop"
-                        android:padding="20dp"/>
-                </com.google.android.material.card.MaterialCardView>
+                    android:layout_marginBottom="16dp"/> <com.google.android.material.card.MaterialCardView
+                android:layout_width="250dp"  android:layout_height="250dp" app:cardCornerRadius="16dp"   app:cardElevation="4dp"        app:strokeWidth="4dp"
+                app:strokeColor="#2f5d28"
+                android:layout_gravity="center_horizontal">
+                <ImageView
+                    android:id="@+id/imgQRCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_calendar"
+                    android:scaleType="fitCenter" android:padding="16dp"/>      </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/tvQRPrice"
@@ -338,18 +331,15 @@
                     android:text="150.000 VNĐ"
                     android:textColor="#212121"
                     android:fontFamily="@font/nunito_black"
-                    android:textSize="16sp"
-                    android:layout_marginTop="12dp"/>
-
-                <TextView
-                    android:id="@+id/tvTimer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hết hạn sau: 04:52"
-                    android:textColor="#D32F2F"
-                    android:fontFamily="@font/nunito_regular"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="18sp"  android:layout_marginTop="16dp"/> <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hết hạn sau: 04:52"
+                android:textColor="#D32F2F"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"/>
             </LinearLayout>
 
         </LinearLayout>

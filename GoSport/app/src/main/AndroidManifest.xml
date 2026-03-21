@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -43,8 +45,6 @@
             android:exported="false" />
 
         <activity android:name=".user.BookingConfirmActivity" />
-
-        <activity android:name=".user.MyBookingsActivity" />
 
         <activity android:name=".review.ReviewActivity" />
 
