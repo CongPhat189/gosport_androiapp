@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gosport.R;
 import com.example.gosport.model.BookingModel;
+import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -18,10 +19,16 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
 
     private Context context;
     private List<BookingModel> list;
+    private OnCancelClickListener cancelListener;
 
-    public BookingUserAdapter(Context context, List<BookingModel> list) {
+    public interface OnCancelClickListener {
+        void onCancelClick(BookingModel booking);
+    }
+
+    public BookingUserAdapter(Context context, List<BookingModel> list, OnCancelClickListener cancelListener) {
         this.context = context;
         this.list = list;
+        this.cancelListener = cancelListener;
     }
 
     @NonNull
@@ -58,6 +65,17 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
         // Trạng thái đơn hàng
         holder.tvOrderStatus.setText(translateStatus(booking.status));
         updateStatusBadge(holder.tvOrderStatus, booking.status);
+
+        if ("Pending".equalsIgnoreCase(booking.status)) {
+            holder.btnCancelOrder.setVisibility(View.VISIBLE);
+            holder.btnCancelOrder.setOnClickListener(v -> {
+                if (cancelListener != null) {
+                    cancelListener.onCancelClick(booking);
+                }
+            });
+        } else {
+            holder.btnCancelOrder.setVisibility(View.GONE);
+        }
     }
 
     private void updateStatusBadge(TextView tv, String status) {
@@ -106,12 +124,12 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
         try {
             // Định dạng gốc của SQLite
             SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            // Định dạng mong muốn: 15/01/2025 08:30
+            // 15/01/2025 08:30
             SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
             return sdfOut.format(sdfIn.parse(dateStr));
         } catch (Exception e) {
-            return dateStr; // Nếu lỗi thì trả về chuỗi gốc để không bị crash
+            return dateStr;
         }
     }
 
@@ -120,6 +138,7 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderCode, tvOrderStatus, tvServiceName, tvOrderDate, tvOrderTime, tvOrderPrice, tvOrderLocation, tvCreatedAt, tvPaymentMethod;
+        MaterialButton btnCancelOrder;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,6 +151,7 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
             tvOrderLocation = itemView.findViewById(R.id.tvOrderLocation);
             tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
             tvPaymentMethod = itemView.findViewById(R.id.tvPaymentMethod);
+            btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
         }
     }
 }

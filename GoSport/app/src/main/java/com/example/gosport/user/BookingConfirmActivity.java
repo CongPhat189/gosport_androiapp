@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.gosport.R;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.utils.SessionManager;
@@ -188,6 +190,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         tvBookingTime.setText(timeDisplay);
         tvBookingDate.setText(dateDisplayText);
         tvQRPrice.setText(formatPrice(totalPrice) + " VNĐ");
+
+        generateVietQR(totalPrice, generatedBookingId);
     }
 
     private void setupPaymentMethods() {
@@ -274,8 +278,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 if (bookingId != -1) {
                     // ===== PAYMENT =====
                     if (selectedPaymentMethod.equals("Cash")) {
-                        dbHelper.confirmCashBooking((int) bookingId);
-
                         dbHelper.insertPayment(
                                 (int) bookingId,
                                 amountPerSlot,
@@ -341,5 +343,36 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private String formatPrice(double price) {
         return String.format(Locale.getDefault(), "%,d", (long) price).replace(",", ".");
+    }
+
+    private void generateVietQR(double amount, String orderId) {
+        // Thông tin tài khoản nhận tiền
+        String bankId = "VCB"; // Tên viết tắt ngân hàng (VD: MB, VCB, TCB, ACB, TPB...)
+        String accountNo = "1234567890"; // Số tài khoản
+        String accountName = "TRAN TUAN THANG"; // Tên chủ tài khoản (Viết hoa không dấu)
+
+        String addInfo = "Thanh toan don " + orderId;
+
+        // Xử lý encode URL (Vì đường link không được chứa dấu cách)
+        try {
+            addInfo = java.net.URLEncoder.encode(addInfo, "UTF-8");
+            accountName = java.net.URLEncoder.encode(accountName, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Tạo đường link API
+        String qrUrl = "https://img.vietqr.io/image/" + bankId + "-" + accountNo + "-compact2.png" +
+                "?amount=" + (long) amount +
+                "&addInfo=" + addInfo +
+                "&accountName=" + accountName;
+
+        // Dùng Glide để load ảnh URL này vào ImageView imgQRCode
+        ImageView imgQRCode = findViewById(R.id.imgQRCode);
+        Glide.with(this)
+                .load(qrUrl)
+                .placeholder(R.drawable.ic_calendar) // Ảnh hiển thị tạm trong lúc chờ tải
+                .error(android.R.drawable.ic_dialog_alert) // Ảnh hiển thị nếu tải lỗi
+                .into(imgQRCode);
     }
 }
