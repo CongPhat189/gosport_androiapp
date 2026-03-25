@@ -98,9 +98,13 @@ public class ReportFragment extends Fragment {
 
     private void loadData(int month, int year) {
         if (tvSelectedDate == null) return;
-        tvSelectedDate.setText("Tháng " + month + ", " + year);
 
+        // Cập nhật text hiển thị ngày tháng đã chọn
+        tvSelectedDate.setText(String.format("Tháng %02d, %d", month, year));
+
+        // Lấy dữ liệu từ Database (Đảm bảo hàm getMonthlyDetails trong DB đã có cột Pending ở index 5)
         Cursor cursor = dbHelper.getMonthlyDetails(year);
+
         List<StatModel> statList = new ArrayList<>();
         List<BarEntry> revenueEntries = new ArrayList<>();
         List<BarEntry> statusEntries = new ArrayList<>();
@@ -116,35 +120,39 @@ public class ReportFragment extends Fragment {
                 try {
                     String mStr = cursor.getString(0);
                     int mInt = Integer.parseInt(mStr);
-                    int count = cursor.getInt(1);
-                    double rev = cursor.getDouble(2); // Lấy giá trị gốc từ DB
-                    int comp = cursor.getInt(3);
-                    int canc = cursor.getInt(4);
+                    int totalCount = cursor.getInt(1);
+                    double revenue = cursor.getDouble(2);
+                    int completed = cursor.getInt(3);
+                    int cancelled = cursor.getInt(4);
+                    int pending = cursor.getInt(5);
 
-                    statList.add(new StatModel(mStr, count, rev, comp));
-                    totalOrdersYear += count;
-                    totalRevYear += rev;
+                    statList.add(new StatModel(mStr, totalCount, revenue, completed));
 
-                    if (rev > maxRevInYear) {
-                        maxRevInYear = rev;
+                    totalOrdersYear += totalCount;
+                    totalRevYear += revenue;
+
+                    if (revenue > maxRevInYear) {
+                        maxRevInYear = revenue;
                         monthWithMaxRev = "Tháng " + mStr;
-                        ordersInMaxMonth = count;
+                        ordersInMaxMonth = totalCount;
                     }
 
-                    // CHỈ vẽ lên biểu đồ tháng được chọn
                     if (mInt == month) {
-                        // Vẽ giá trị thực tế lên biểu đồ (không chia triệu)
-                        revenueEntries.add(new BarEntry(1f, (float) rev));
-                        statusEntries.add(new BarEntry(1f, new float[]{comp, canc}));
+                        revenueEntries.add(new BarEntry(0f, (float) revenue));
+
+                        statusEntries.add(new BarEntry(0f, (float) completed));
+                        statusEntries.add(new BarEntry(1f, (float) cancelled));
+                        statusEntries.add(new BarEntry(2f, (float) pending));
                     }
-                } catch (Exception e) { e.printStackTrace(); }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } while (cursor.moveToNext());
             cursor.close();
         }
 
-        // --- CẬP NHẬT UI VỚI ĐỊNH DẠNG NGHÌN (XÓA ĐƠN VỊ TRIỆU) ---
         tvTotalOrders.setText(String.valueOf(totalOrdersYear));
-        tvTotalRevenue.setText(String.format("%,.0fđ", totalRevYear)); // Định dạng: 37.200.000đ
+        tvTotalRevenue.setText(String.format("%,.0fđ", totalRevYear));
 
         tvBestMonth.setText(monthWithMaxRev);
         tvBestMonthDetail.setText(ordersInMaxMonth + " đơn • " + String.format("%,.0fđ", maxRevInYear));
@@ -212,13 +220,16 @@ public class ReportFragment extends Fragment {
 
         barChartRevenue.setData(new BarData(revSet));
         barChartRevenue.getXAxis().setDrawLabels(false);
-        barChartRevenue.getAxisLeft().setDrawLabels(false); // Ẩn trục dọc vì số quá dài
+        barChartRevenue.getAxisLeft().setDrawLabels(false);
         barChartRevenue.invalidate();
 
-        // --- Cấu hình Biểu đồ Trạng thái (Tỉ lệ hoàn thành) ---
         BarDataSet statusSet = new BarDataSet(statusEntries, "");
-        statusSet.setColors(new int[]{Color.parseColor("#1B5E20"), Color.parseColor("#F57F17")});
-        statusSet.setStackLabels(new String[]{"Thành công", "Đã hủy"});
+        statusSet.setColors(new int[]{
+                Color.parseColor("#1B5E20"),
+                Color.parseColor("#F57F17"),
+                Color.parseColor("#0277BD")
+        });
+        statusSet.setStackLabels(new String[]{"Thành công", "Đã hủy", "Đang chờ"});
         statusSet.setValueTextColor(Color.WHITE);
         statusSet.setValueTextSize(12f);
 

@@ -255,47 +255,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         // ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
-// ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
 
-        // Đơn 1: Chờ duyệt (Pending) - Ngày 15/03/2026
         ContentValues b1 = new ContentValues();
-        b1.put("user_id", 2); // ID của Nguyễn Văn A vừa tạo ở trên
-        b1.put("field_id", 1); // Sân A1
+        b1.put("user_id", userId1);
+        b1.put("field_id", 1);
         b1.put("start_time", "2026-03-15 08:00:00");
         b1.put("end_time", "2026-03-15 10:00:00");
         b1.put("total_price", 600000);
         b1.put("status", "Pending");
         db.insert(TABLE_BOOKINGS, null, b1);
 
-        // Đơn 2: Đã Check-in (Checkin) - Ngày 20/03/2026
+// 2. Đơn Checkin (Đã nhận sân) - Sân B2
         ContentValues b2 = new ContentValues();
-        b2.put("user_id", 2);
-        b2.put("field_id", 2); // Sân B2
-        b2.put("start_time", "2026-03-20 17:00:00");
-        b2.put("end_time", "2026-03-20 19:00:00");
+        b2.put("user_id", userId1);
+        b2.put("field_id", 2);
+        b2.put("start_time", "2026-03-16 17:00:00");
+        b2.put("end_time", "2026-03-16 19:00:00");
         b2.put("total_price", 300000);
         b2.put("status", "Checkin");
         db.insert(TABLE_BOOKINGS, null, b2);
 
-        // Đơn 3: Hoàn thành (Completed) - Ngày 10/02/2026
+// 3. Đơn Completed (Hoàn thành) - Sân A1
         ContentValues b3 = new ContentValues();
-        b3.put("user_id", 2);
+        b3.put("user_id", userId1);
         b3.put("field_id", 1);
-        b3.put("start_time", "2026-02-10 14:00:00");
-        b3.put("end_time", "2026-02-10 16:00:00");
+        b3.put("start_time", "2026-03-10 14:00:00");
+        b3.put("end_time", "2026-03-10 16:00:00");
         b3.put("total_price", 600000);
         b3.put("status", "Completed");
         db.insert(TABLE_BOOKINGS, null, b3);
 
-        // Đơn 4: Đã hủy (Cancelled) - Ngày 01/01/2026
+// 4. Đơn Cancelled (Đã hủy) - Sân A1
         ContentValues b4 = new ContentValues();
-        b4.put("user_id", 2);
-        b4.put("field_id", 3);
-        b4.put("start_time", "2026-01-01 09:00:00");
-        b4.put("end_time", "2026-01-01 11:00:00");
-        b4.put("total_price", 800000);
+        b4.put("user_id", userId1);
+        b4.put("field_id", 1);
+        b4.put("start_time", "2026-03-05 09:00:00");
+        b4.put("end_time", "2026-03-05 11:00:00");
+        b4.put("total_price", 600000);
         b4.put("status", "Cancelled");
         db.insert(TABLE_BOOKINGS, null, b4);
+
+// 5. Thêm một đơn Pending nữa để cột "Đang chờ" cao hơn
+        ContentValues b5 = new ContentValues();
+        b5.put("user_id", userId1);
+        b5.put("field_id", 2);
+        b5.put("start_time", "2026-03-25 18:00:00");
+        b5.put("end_time", "2026-03-25 20:00:00");
+        b5.put("total_price", 300000);
+        b5.put("status", "Pending");
+        db.insert(TABLE_BOOKINGS, null, b5);
 
         ContentValues pay1 = new ContentValues();
         pay1.put("booking_id", 1);
@@ -643,22 +651,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result > 0;
     }
 
-    public boolean completeBooking(int bookingId) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("status", "Completed");
-
-        int result = db.update(
-                TABLE_BOOKINGS,
-                values,
-                "booking_id=?",
-                new String[]{String.valueOf(bookingId)}
-        );
-
-        return result > 0;
-    }
 
     public boolean cancelBookingWithRule(int bookingId, String startTime) {
 
@@ -792,6 +784,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{String.valueOf(userId)});
     }
 
+    public Cursor getBookingStatusStats() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Đếm số lượng đơn cho mỗi trạng thái: Pending, Confirmed, Checkin, Cancelled, Completed
+        String query = "SELECT status, COUNT(*) as count " +
+                "FROM " + TABLE_BOOKINGS +
+                " GROUP BY status";
+        return db.rawQuery(query, null);
+    }
+
     public Cursor getBookingsUserFiltered(int userId, String from, String to) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -830,11 +831,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " +
                 "strftime('%m', start_time) as month, " +
-                "COUNT(*) as count, " +
+                "COUNT(*) as total_count, " +
                 "SUM(CASE WHEN status = 'Completed' THEN total_price ELSE 0 END) as revenue, " +
                 "SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed, " +
-                "SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) as cancelled " +
-                "FROM bookings " +
+                "SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) as cancelled, " +
+                "SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending " + // THÊM DÒNG NÀY
+                "FROM Bookings " +
                 "WHERE strftime('%Y', start_time) = ? " +
                 "GROUP BY month ORDER BY month ASC";
         return db.rawQuery(query, new String[]{String.valueOf(year)});
