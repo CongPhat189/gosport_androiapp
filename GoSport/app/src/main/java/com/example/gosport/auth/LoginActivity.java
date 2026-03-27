@@ -74,9 +74,10 @@ public class LoginActivity extends AppCompatActivity {
             String fullName = cursor.getString(cursor.getColumnIndexOrThrow("full_name"));
             String userEmail = cursor.getString(cursor.getColumnIndexOrThrow("email"));
             String role = cursor.getString(cursor.getColumnIndexOrThrow("role"));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"));
             cursor.close();
 
-            sessionManager.createLoginSession(userId, fullName, userEmail, role);
+            sessionManager.createLoginSession(userId, fullName, userEmail, role, phone);
 
             Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
