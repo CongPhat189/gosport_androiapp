@@ -877,4 +877,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{String.valueOf(year), monthStr});
     }
 
+    // deleteAccount
+    public boolean deleteAccount(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_IS_DELETED, 1);
+        int result = db.update(TABLE_USERS, values,
+                USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+
+    public boolean updateProfile(int userId, String fullName, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_FULL_NAME, fullName);
+        values.put(USER_PHONE, phone);
+        int result = db.update(TABLE_USERS, values,
+                USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+
+    public boolean isPhoneExistsExcluding(String phone, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS +
+                        " WHERE " + USER_PHONE + " = ? AND " + USER_ID + " != ?",
+                new String[]{phone, String.valueOf(userId)}
+        );
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+
 }
