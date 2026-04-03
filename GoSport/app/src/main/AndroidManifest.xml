@@ -30,9 +30,6 @@
             android:name=".auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
-            android:exported="false" />
-        <activity
             android:name=".admin.AdminActivity"
             android:exported="false" />
 
@@ -49,6 +46,11 @@
         <activity android:name=".review.ReviewActivity" />
 
         <activity android:name=".review.WriteReviewActivity" />
+        <activity
+            android:name=".user.VNPayWebViewActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
