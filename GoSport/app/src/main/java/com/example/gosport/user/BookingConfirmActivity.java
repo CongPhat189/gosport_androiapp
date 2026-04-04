@@ -318,8 +318,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         if (isSuccess) {
             Toast.makeText(this, "Đặt sân thành công", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, UserActivity.class);
+            intent.putExtra("OPEN_FRAGMENT", "BOOKING");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
             finish();
-
 
         } else {
             Toast.makeText(this, "Có lỗi xảy ra khi lưu vào hệ thống", Toast.LENGTH_SHORT).show();
