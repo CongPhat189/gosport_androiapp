@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import com.example.gosport.utils.VNPayHelper;
+
 
 public class BookingConfirmActivity extends AppCompatActivity {
     private SessionManager sessionManager;
@@ -59,6 +61,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private double totalPrice = 0;
     private String selectedPaymentMethod = "Bank"; // Mặc định chuyển khoản
     private String generatedBookingId;
+    private static final int VNPAY_REQUEST_CODE = 1001;
+
 
     // Danh sách các ngày cụ thể sẽ được đặt (Dùng chung cho cả Daily và Fixed)
     private List<String> finalDatesToBook = new ArrayList<>();
@@ -94,13 +98,13 @@ public class BookingConfirmActivity extends AppCompatActivity {
 //        btnApplyPromo = findViewById(R.id.btnApplyPromo);
 
 //        cardPayCredit = findViewById(R.id.cardPayCredit);
-//        cardPayWallet = findViewById(R.id.cardPayWallet);
+        cardPayWallet = findViewById(R.id.cardPayWallet);
         cardPayBank = findViewById(R.id.cardPayBank);
 
         cardPayCash = findViewById(R.id.cardPayCash);
 
 //        radioPayCredit = findViewById(R.id.radioPayCredit);
-//        radioPayWallet = findViewById(R.id.radioPayWallet);
+        radioPayWallet = findViewById(R.id.radioPayWallet);
         radioPayBank = findViewById(R.id.radioPayBank);
         radioPayCash = findViewById(R.id.radioPayCash);
 
@@ -203,6 +207,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         if (cardPayCash != null)
             cardPayCash.setOnClickListener(v -> updatePaymentUI(cardPayCash, radioPayCash, "Cash"));
+        if (cardPayWallet != null)
+            cardPayWallet.setOnClickListener(v -> updatePaymentUI(cardPayWallet, radioPayWallet, "Wallet"));
+
 
     }
 
@@ -221,7 +228,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         selectedRadio.setChecked(true);
 
         // Ẩn/Hiện mã QR
-        if (method.equals("Bank") || method.equals("Wallet")) {
+        if (method.equals("Bank")) {
             layoutQRCode.setVisibility(View.VISIBLE);
         } else {
             layoutQRCode.setVisibility(View.GONE);
@@ -241,10 +248,17 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         btnCancelTransaction.setOnClickListener(v -> finish());
 
-        btnConfirmPayment.setOnClickListener(v -> saveBookingToDatabase());
+        btnConfirmPayment.setOnClickListener(v -> {
+            if ("Wallet".equals(selectedPaymentMethod)) {
+                launchVNPayPayment();
+            } else {
+                saveBookingToDatabase(false);
+            }
+        });
+
     }
 
-    private void saveBookingToDatabase() {
+    private void saveBookingToDatabase(boolean isVNPay)  {
         int currentUserId = sessionManager.getUserId();
 
         if (currentUserId == -1) {
@@ -285,7 +299,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 generatedBookingId,
                                 "Pending"
                         );
-                    } else { // Chuyển khoản (Bank)
+                    } else { // Chuyển khoản hoặc VNPay
                         // Giả lập thanh toán Bank thành công
                         dbHelper.insertPayment(
                                 (int) bookingId,
@@ -296,7 +310,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         );
                         dbHelper.confirmBankBooking((int) bookingId);
                     }
-                } else {
+                } else { // Chuyển khoản hoặc VNPay
                     isSuccess = false;
                 }
             }
@@ -304,8 +318,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         if (isSuccess) {
             Toast.makeText(this, "Đặt sân thành công", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, UserActivity.class);
+            intent.putExtra("OPEN_FRAGMENT", "BOOKING");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
             finish();
-
 
         } else {
             Toast.makeText(this, "Có lỗi xảy ra khi lưu vào hệ thống", Toast.LENGTH_SHORT).show();
@@ -375,4 +392,26 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 .error(android.R.drawable.ic_dialog_alert) // Ảnh hiển thị nếu tải lỗi
                 .into(imgQRCode);
     }
+
+    private void launchVNPayPayment() {
+        String orderInfo = "Dat san " + fieldName;
+        String paymentUrl = VNPayHelper.buildPaymentUrl(totalPrice, generatedBookingId, orderInfo);
+        Intent intent = new Intent(this, VNPayWebViewActivity.class);
+        intent.putExtra("PAYMENT_URL", paymentUrl);
+        startActivityForResult(intent, VNPAY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VNPAY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null
+                    && data.getBooleanExtra("PAYMENT_SUCCESS", false)) {
+                saveBookingToDatabase(true);
+            } else {
+                Toast.makeText(this, "Thanh toán VNPay thất bại hoặc đã hủy.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 }

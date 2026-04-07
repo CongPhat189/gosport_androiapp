@@ -54,8 +54,14 @@ public class UserActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         if (savedInstanceState == null) {
-            loadFragment(new FieldListFragment());
+            String openFragment = getIntent().getStringExtra("OPEN_FRAGMENT");
+            if ("BOOKING".equals(openFragment)) {
+                loadFragment(new BookingUserFragment());
+            } else {
+                loadFragment(new FieldListFragment());
+            }
         }
+
 
         btnViewField.setOnClickListener(v -> {
             loadFragment(new FieldListFragment());
@@ -90,6 +96,16 @@ public class UserActivity extends AppCompatActivity {
                     .show();
         });
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String openFragment = intent.getStringExtra("OPEN_FRAGMENT");
+        if ("BOOKING".equals(openFragment)) {
+            loadFragment(new BookingUserFragment());
+        }
+    }
+
 
     void loadFragment(Fragment fragment) {
         getSupportFragmentManager()

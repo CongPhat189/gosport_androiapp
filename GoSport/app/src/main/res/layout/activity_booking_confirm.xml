@@ -256,26 +256,57 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-<!--            Ví điện tử-->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:id="@+id/cardPayWallet"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="12dp"-->
-<!--                app:cardBackgroundColor="#FFFFFF"-->
-<!--                app:cardCornerRadius="16dp"-->
-<!--                app:cardElevation="0dp"-->
-<!--                app:strokeColor="#E0E0E0"-->
-<!--                app:strokeWidth="1dp">-->
-<!--                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical">-->
-<!--                    <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@drawable/ic_calendar" app:tint="#9C27B0"/>-->
-<!--                    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="16dp">-->
-<!--                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ví điện tử" android:textColor="#212121" android:fontFamily="@font/nunito_bold" android:textSize="15sp"/>-->
-<!--                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MoMo, ZaloPay, VNPay" android:textColor="#757575" android:fontFamily="@font/nunito_regular" android:textSize="12sp"/>-->
-<!--                    </LinearLayout>-->
-<!--                    <RadioButton android:id="@+id/radioPayWallet" android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#2f5d28" android:clickable="false"/>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPayWallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="#0066CC" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VNPay"
+                            android:textColor="#212121"
+                            android:fontFamily="@font/nunito_bold"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thanh toán qua cổng VNPay"
+                            android:textColor="#757575"
+                            android:fontFamily="@font/nunito_regular"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <RadioButton
+                        android:id="@+id/radioPayWallet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#2f5d28"
+                        android:clickable="false" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPayCash"
