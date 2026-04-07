@@ -14,9 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gosport.R;
 import com.example.gosport.database.DatabaseHelper;
 import com.example.gosport.utils.SessionManager;
-import com.example.gosport.admin.AdminActivity;
-import com.example.gosport.user.UserActivity;
-
+import com.example.gosport.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,12 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             sessionManager.createLoginSession(userId, fullName, userEmail, role, phone);
 
             Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-            Intent intent;
-            if ("ADMIN".equals(role)) {
-                intent = new Intent(LoginActivity.this, AdminActivity.class);
-            } else {
-                intent = new Intent(LoginActivity.this, UserActivity.class);
-            }
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
 

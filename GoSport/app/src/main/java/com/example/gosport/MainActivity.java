@@ -21,12 +21,7 @@ public class MainActivity extends AppCompatActivity {
         // Auto redirect neu da login
         SessionManager sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
-            String role = sessionManager.getRole();
-            if ("ADMIN".equals(role)) {
-                startActivity(new Intent(this, com.example.gosport.admin.AdminActivity.class));
-            } else {
-                startActivity(new Intent(this, com.example.gosport.user.UserActivity.class));
-            }
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
             return;
         }
