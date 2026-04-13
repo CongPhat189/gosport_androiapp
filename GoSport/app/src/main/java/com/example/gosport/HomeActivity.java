@@ -27,7 +27,7 @@ public class HomeActivity extends AppCompatActivity {
 
         tvWelcome = findViewById(R.id.tvWelcomeHome);
 
-        btnLogout = findViewById(R.id.btnLogout);
+
 
 
         tvWelcome.setText("Xin chào, " + sessionManager.getFullName() + "!");
@@ -63,12 +63,6 @@ public class HomeActivity extends AppCompatActivity {
             }, 1000);
         }
 
-        btnLogout.setOnClickListener(v -> {
-            sessionManager.logout();
-            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
+
     }
 }
