@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.example.gosport.model.User;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -31,13 +33,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // ================= USERS COLUMNS =================
     public static final String USER_ID = "user_id";
-    public static final String USER_FIREBASE_UID = "firebase_uid";
+
     public static final String USER_ROLE = "role";
     public static final String USER_FULL_NAME = "full_name";
     public static final String USER_PHONE = "phone_number";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password_hash";
-    public static final String USER_AVATAR = "avatar";
+
     public static final String USER_IS_ACTIVE = "is_active";
     public static final String USER_IS_DELETED = "is_deleted";
     public static final String USER_CREATED_AT = "created_at";
@@ -46,13 +48,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
                     USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    USER_FIREBASE_UID + " TEXT UNIQUE, " +
                     USER_ROLE + " TEXT CHECK(" + USER_ROLE + " IN ('ADMIN','USER')) DEFAULT 'USER', " +
                     USER_FULL_NAME + " TEXT NOT NULL, " +
                     USER_PHONE + " TEXT UNIQUE, " +
                     USER_EMAIL + " TEXT UNIQUE NOT NULL, " +
                     USER_PASSWORD + " TEXT, " +
-                    USER_AVATAR + " TEXT, " +
                     USER_IS_ACTIVE + " INTEGER DEFAULT 1, " +
                     USER_IS_DELETED + " INTEGER DEFAULT 0, " +
                     USER_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
@@ -305,12 +305,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         b5.put("status", "Pending");
         db.insert(TABLE_BOOKINGS, null, b5);
 
-        ContentValues pay1 = new ContentValues();
-        pay1.put("booking_id", 1);
-        pay1.put("amount", 100000);
-        pay1.put("payment_method", "CASH");
-        pay1.put("payment_status", "FINISH");
-        db.insert(TABLE_PAYMENTS, null, pay1);
+
 
         ContentValues pay4 = new ContentValues();
         pay4.put("booking_id", 4);
@@ -319,12 +314,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         pay4.put("payment_status", "FINISH");
         db.insert(TABLE_PAYMENTS, null, pay4);
 
-        ContentValues pay2 = new ContentValues();
-        pay2.put("booking_id", 2);
-        pay2.put("amount", 100000);
-        pay2.put("payment_method", "CASH");
-        pay2.put("payment_status", "FINISH");
-        db.insert(TABLE_PAYMENTS, null, pay2);
+
 
         ContentValues pay3 = new ContentValues();
         pay3.put("booking_id", 3);
@@ -636,20 +626,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
-    public boolean confirmCashBooking(int bookingId) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("status", "Pending");
-
-        int result = db.update(TABLE_BOOKINGS,
-                values,
-                "booking_id=?",
-                new String[]{String.valueOf(bookingId)});
-
-        return result > 0;
-    }
 
 
     public boolean cancelBookingWithRule(int bookingId, String startTime) {
@@ -774,24 +751,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_BOOKINGS, values, "booking_id = ?", new String[]{String.valueOf(bookingId)}) > 0;
     }
 
-    public Cursor getBookingsForUser(int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT b.*, f.field_name, f.address " +
-                "FROM bookings b " +
-                "JOIN fields f ON b.field_id = f.field_id " +
-                "WHERE b.user_id = ? " +
-                "ORDER BY b.start_time DESC";
-        return db.rawQuery(query, new String[]{String.valueOf(userId)});
-    }
 
-    public Cursor getBookingStatusStats() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        // Đếm số lượng đơn cho mỗi trạng thái: Pending, Confirmed, Checkin, Cancelled, Completed
-        String query = "SELECT status, COUNT(*) as count " +
-                "FROM " + TABLE_BOOKINGS +
-                " GROUP BY status";
-        return db.rawQuery(query, null);
-    }
+
+
 
     public Cursor getBookingsUserFiltered(int userId, String from, String to) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -813,20 +775,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // 1. Lấy dữ liệu thống kê tổng hợp theo năm
-    public Cursor getYearlyKpis(int year) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " +
-                "COUNT(*) as total_orders, " +
-                "SUM(total_price) as total_revenue, " +
-                "(SELECT COUNT(*) FROM bookings WHERE strftime('%Y', start_time) = ?) as prev_year_orders " +
-                "FROM bookings " +
-                "WHERE strftime('%Y', start_time) = ? AND status = 'Completed'";
 
-        return db.rawQuery(query, new String[]{String.valueOf(year - 1), String.valueOf(year)});
-    }
 
-    // 2. Lấy chi tiết từng tháng (Số đơn, Doanh thu, Trạng thái)
+    //  Lấy chi tiết từng tháng (Số đơn, Doanh thu, Trạng thái)
     public Cursor getMonthlyDetails(int year) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " +
@@ -842,40 +793,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{String.valueOf(year)});
     }
 
-    public double getTotalRevenueOfYear(int year) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT SUM(totalPrice) FROM Orders WHERE strftime('%Y', date) = ?", new String[]{String.valueOf(year)});
-        double total = 0;
-        if (cursor.moveToFirst()) total = cursor.getDouble(0);
-        cursor.close();
-        return total;
-    }
 
-    public int getTotalOrdersOfYear(int year) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM Orders WHERE strftime('%Y', date) = ?", new String[]{String.valueOf(year)});
-        int count = 0;
-        if (cursor.moveToFirst()) count = cursor.getInt(0);
-        cursor.close();
-        return count;
-    }
 
-    public Cursor getStatBySpecificMonth(int month, int year) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        // Format tháng thành "01", "02"... để khớp với strftime
-        String monthStr = String.format("%02d", month);
 
-        String query = "SELECT strftime('%m', date) as Month, " +
-                "COUNT(*) as Total, " +
-                "SUM(totalPrice) as Revenue, " +
-                "SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as Completed, " +
-                "SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) as Cancelled " +
-                "FROM Orders " +
-                "WHERE strftime('%Y', date) = ? AND strftime('%m', date) = ? " +
-                "GROUP BY Month";
 
-        return db.rawQuery(query, new String[]{String.valueOf(year), monthStr});
-    }
+
 
     // deleteAccount
     public boolean deleteAccount(int userId) {
@@ -911,6 +833,90 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
+    }
+
+    // User management for Admin
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(
+                "SELECT * FROM " + TABLE_USERS, null);
+
+        if (c.moveToFirst()) {
+            do {
+                User u = new User();
+                u.setId(c.getInt(c.getColumnIndexOrThrow("user_id")));
+                u.setRole(c.getString(c.getColumnIndexOrThrow("role")));
+                u.setFullName(c.getString(c.getColumnIndexOrThrow("full_name")));
+                u.setPhone(c.getString(c.getColumnIndexOrThrow("phone_number")));
+                u.setEmail(c.getString(c.getColumnIndexOrThrow("email")));
+                u.setPassword(c.getString(c.getColumnIndexOrThrow("password_hash")));
+                u.setIsActive(c.getInt(c.getColumnIndexOrThrow("is_active")));
+                u.setIsDeleted(c.getInt(c.getColumnIndexOrThrow("is_deleted")));
+                list.add(u);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return list;
+    }
+    public int updateUserInfo(int id, String name, String phone, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_FULL_NAME, name);
+        values.put(USER_PHONE, phone);
+        values.put(USER_EMAIL, email);
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
+    }
+    public int updatePassword(int id, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_PASSWORD, hashPassword(newPassword));
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
+    }
+    public int lockUser(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_IS_ACTIVE, 0);
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+    public int unlockUser(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_IS_ACTIVE, 1);
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
+    }
+    public int deleteUser(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_IS_DELETED, 1);
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
+    }
+    public int updateUserRole(int id, String role) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_ROLE, role);
+
+        return db.update(TABLE_USERS, values,
+                USER_ID + "=?", new String[]{String.valueOf(id)});
     }
 
 

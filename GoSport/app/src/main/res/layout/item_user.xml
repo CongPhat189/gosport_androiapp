@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#C3E6CB"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- INFO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="12dp">
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1B4332"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/txtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#6C757D"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#6C757D"
+                android:layout_marginTop="1dp"/>
+
+            <!-- Badge row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/txtRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:textColor="#1B4332"
+                    app:chipBackgroundColor="#D1FAE5"
+                    app:chipStrokeColor="#6EE7B7"
+                    app:chipStrokeWidth="1dp"
+                    app:chipCornerRadius="6dp"
+                    app:chipMinHeight="28dp"
+                    app:ensureMinTouchTargetSize="false"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/txtStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:textSize="11sp"
+                    android:textColor="#065F46"
+                    app:chipBackgroundColor="#A7F3D0"
+                    app:chipStrokeColor="#34D399"
+                    app:chipStrokeWidth="1dp"
+                    app:chipCornerRadius="6dp"
+                    app:chipMinHeight="28dp"
+                    app:ensureMinTouchTargetSize="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E9F7EF"/>
+
+        <!-- BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- Row 1: Sửa + Xóa -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEdit"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Sửa"
+                    android:textSize="12sp"
+                    android:textColor="#166534"
+                    android:letterSpacing="0"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#86EFAC"
+                    app:strokeWidth="1dp"
+                    android:backgroundTint="#F0FDF4"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelete"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Xóa"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:letterSpacing="0"
+                    app:cornerRadius="8dp"
+                    app:strokeWidth="0dp"
+                    android:backgroundTint="#DC2626"/>
+
+            </LinearLayout>
+
+            <!-- Row 2: Khóa + Mật khẩu + Vai trò -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLock"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Khóa"
+                    android:textSize="11sp"
+                    android:textColor="#101010"
+                    android:letterSpacing="0"
+                    app:cornerRadius="8dp"
+                    android:backgroundTint="#16A34A"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPassword"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Mật khẩu"
+                    android:textSize="11sp"
+                    android:textColor="#166534"
+                    android:letterSpacing="0"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#86EFAC"
+                    app:strokeWidth="1dp"
+                    android:backgroundTint="#F0FDF4"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRole"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Vai trò"
+                    android:textSize="11sp"
+                    android:textColor="#166534"
+                    android:letterSpacing="0"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#86EFAC"
+                    app:strokeWidth="1dp"
+                    android:backgroundTint="#F0FDF4"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
