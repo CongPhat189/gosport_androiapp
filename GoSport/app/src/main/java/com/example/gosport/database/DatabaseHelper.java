@@ -164,7 +164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues cat2 = new ContentValues();
         cat2.put("category_name", "Sân cầu lông");
-        cat2.put("description", "Sân trong nhà");
+        cat2.put("description", "Sân cầu lông đạt chuẩn quốc tế");
         long badmintonId = db.insert(TABLE_CATEGORIES, null, cat2);
 
         ContentValues cat3 = new ContentValues();
@@ -175,8 +175,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // ===== SEED FIELDS =====
         ContentValues field1 = new ContentValues();
         field1.put("category_id", footballId);
-        field1.put("field_name", "Sân A1");
-        field1.put("address", "212 Điện Biên Phủ, Phường 17, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam");
+        field1.put("field_name", "Sân Bóng Linh Trung");
+        field1.put("address", "1262 Kha Vạn Cân, Khu phố 2, Linh Xuân, Hồ Chí Minh, Việt Nam");
         field1.put("description", "Sân mới, cỏ nhân tạo");
         field1.put("price_per_hour", 300000);
         field1.put("status", "Available");
@@ -185,8 +185,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues field2 = new ContentValues();
         field2.put("category_id", badmintonId);
-        field2.put("field_name", "Sân Cầu Lông B2");
-        field2.put("address", "Quận 3, TP.HCM");
+        field2.put("field_name", "Sân Cầu Lông 68");
+        field2.put("address", "230A Kha Vạn Cân, Phường Linh Trung, Linh Xuân, Hồ Chí Minh 71200, Việt Nam");
         field2.put("description", "Sân trong nhà, máy lạnh");
         field2.put("price_per_hour", 150000);
         field2.put("status", "Available");
@@ -196,12 +196,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues field3 = new ContentValues();
         field3.put("category_id", tennisId);
         field3.put("field_name", "Sân Tennis T1");
-        field3.put("address", "Quận 7, TP.HCM");
-        field3.put("description", "Sân chuẩn thi đấu");
+        field3.put("address", "26 Đường Số 22, Linh Đông, Hiệp Bình, Hồ Chí Minh, Việt Nam");
+        field3.put("description", "Sân tennis trong nhà, máy lạnh, chuẩn thi đấu");
         field3.put("price_per_hour", 400000);
-        field3.put("status", "Maintenance");
+        field3.put("status", "Available");
         field3.put("image_url", "");
         db.insert(TABLE_FIELDS, null, field3);
+
+        ContentValues field4 = new ContentValues();
+        field4.put("category_id", footballId);
+        field4.put("field_name", "Sân Bóng Đá Cầu Đỏ");
+        field4.put("address", "516 Đ. Phạm Văn Đồng, Phường 13, Bình Lợi Trung, Hồ Chí Minh 700000, Việt Nam");
+        field4.put("description", "Sân mới, cỏ nhân tạo, có thể liên hệ tổ chức đá giải");
+        field4.put("price_per_hour", 350000);
+        field4.put("status", "Available");
+        field4.put("image_url", "");
+        db.insert(TABLE_FIELDS, null, field4);
 
 
 
@@ -254,74 +264,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_USERS, null, user2);
 
 
-        // ===== SEED BOOKINGS (Dữ liệu test cho Admin) =====
-
-        ContentValues b1 = new ContentValues();
-        b1.put("user_id", userId1);
-        b1.put("field_id", 1);
-        b1.put("start_time", "2026-03-15 08:00:00");
-        b1.put("end_time", "2026-03-15 10:00:00");
-        b1.put("total_price", 600000);
-        b1.put("status", "Pending");
-        db.insert(TABLE_BOOKINGS, null, b1);
-
-// 2. Đơn Checkin (Đã nhận sân) - Sân B2
-        ContentValues b2 = new ContentValues();
-        b2.put("user_id", userId1);
-        b2.put("field_id", 2);
-        b2.put("start_time", "2026-03-16 17:00:00");
-        b2.put("end_time", "2026-03-16 19:00:00");
-        b2.put("total_price", 300000);
-        b2.put("status", "Checkin");
-        db.insert(TABLE_BOOKINGS, null, b2);
-
-// 3. Đơn Completed (Hoàn thành) - Sân A1
-        ContentValues b3 = new ContentValues();
-        b3.put("user_id", userId1);
-        b3.put("field_id", 1);
-        b3.put("start_time", "2026-03-10 14:00:00");
-        b3.put("end_time", "2026-03-10 16:00:00");
-        b3.put("total_price", 600000);
-        b3.put("status", "Completed");
-        db.insert(TABLE_BOOKINGS, null, b3);
-
-// 4. Đơn Cancelled (Đã hủy) - Sân A1
-        ContentValues b4 = new ContentValues();
-        b4.put("user_id", userId1);
-        b4.put("field_id", 1);
-        b4.put("start_time", "2026-03-05 09:00:00");
-        b4.put("end_time", "2026-03-05 11:00:00");
-        b4.put("total_price", 600000);
-        b4.put("status", "Cancelled");
-        db.insert(TABLE_BOOKINGS, null, b4);
-
-// 5. Thêm một đơn Pending nữa để cột "Đang chờ" cao hơn
-        ContentValues b5 = new ContentValues();
-        b5.put("user_id", userId1);
-        b5.put("field_id", 2);
-        b5.put("start_time", "2026-03-25 18:00:00");
-        b5.put("end_time", "2026-03-25 20:00:00");
-        b5.put("total_price", 300000);
-        b5.put("status", "Pending");
-        db.insert(TABLE_BOOKINGS, null, b5);
 
 
 
-        ContentValues pay4 = new ContentValues();
-        pay4.put("booking_id", 4);
-        pay4.put("amount", 100000);
-        pay4.put("payment_method", "E-Wallet");
-        pay4.put("payment_status", "FINISH");
-        db.insert(TABLE_PAYMENTS, null, pay4);
 
 
 
-        ContentValues pay3 = new ContentValues();
-        pay3.put("booking_id", 3);
-        pay3.put("amount", 100000);
-        pay3.put("payment_method", "E-Wallet");
-        pay3.put("payment_status", "FINISH");
-        db.insert(TABLE_PAYMENTS, null, pay3);
+
     }
 
     @Override
@@ -658,25 +607,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getBookingsByUser(int userId) {
 
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query =
-                "SELECT b.booking_id, f.field_name, f.address, " +
-                        "b.start_time, b.end_time, " +
-                        "b.total_price, b.status " +
-                        "FROM " + TABLE_BOOKINGS + " b " +
-                        "INNER JOIN " + TABLE_FIELDS + " f " +
-                        "ON b.field_id = f.field_id " +
-                        "WHERE b.user_id = ? " +
-                        "ORDER BY b.created_at DESC";
-
-        return db.rawQuery(
-                query,
-                new String[]{String.valueOf(userId)}
-        );
-    }
 
     public Cursor getBookingsForFieldOnDate(int fieldId, String dateString) {
         SQLiteDatabase db = this.getReadableDatabase();

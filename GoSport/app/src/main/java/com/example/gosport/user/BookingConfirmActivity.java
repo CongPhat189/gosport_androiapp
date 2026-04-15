@@ -364,9 +364,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private void generateVietQR(double amount, String orderId) {
         // Thông tin tài khoản nhận tiền
-        String bankId = "VCB"; // Tên viết tắt ngân hàng (VD: MB, VCB, TCB, ACB, TPB...)
-        String accountNo = "1234567890"; // Số tài khoản
-        String accountName = "TRAN TUAN THANG"; // Tên chủ tài khoản (Viết hoa không dấu)
+        String bankId = "MB"; // Tên viết tắt ngân hàng (VD: MB, VCB, TCB, ACB, TPB...)
+        String accountNo = "99999999189"; // Số tài khoản
+        String accountName = "TRAN CONG PHAT"; // Tên chủ tài khoản (Viết hoa không dấu)
 
         String addInfo = "Thanh toan don " + orderId;
 

@@ -111,8 +111,10 @@ public class BookingUserAdapter extends RecyclerView.Adapter<BookingUserAdapter.
         try {
             // Định dạng gốc của SQLite
             SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            sdfIn.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             // Định dạng mong muốn: 15/01/2025 08:30
             SimpleDateFormat sdfOut = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            sdfOut.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
             return sdfOut.format(sdfIn.parse(dateStr));
         } catch (Exception e) {

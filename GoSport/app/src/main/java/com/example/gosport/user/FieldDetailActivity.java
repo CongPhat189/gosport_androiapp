@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gosport.R;
 import com.example.gosport.adapter.CalendarDayAdapter;
 import com.example.gosport.adapter.TimeSlotAdapter;
@@ -52,6 +54,7 @@ public class FieldDetailActivity extends AppCompatActivity {
     private LinearLayout layoutDailyView, layoutFixedView;
     private RecyclerView rvCalendar, rvTimeSlots;
     private ImageButton btnBack;
+    private ImageView imgField;
 
     // Fixed Mode Specific UI
     private ChipGroup chipGroupDow;
@@ -146,6 +149,7 @@ public class FieldDetailActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tvPrice);
         tvDescription = findViewById(R.id.tvDescription);
         tvCateField = findViewById(R.id.cateField);
+        imgField = findViewById(R.id.imgField);
 
         cardStatusBadge = findViewById(R.id.tvStatusBadge);
         tvStatusText = cardStatusBadge.findViewById(R.id.tvStatusText);
@@ -210,7 +214,17 @@ public class FieldDetailActivity extends AppCompatActivity {
 
         fieldId = i.getIntExtra("fieldId", 0);
         pricePerHour = i.getDoubleExtra("price", 0);
+        String imgUrl = i.getStringExtra("imageUrl");
 
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imgUrl)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(imgField);
+        } else {
+            imgField.setImageResource(R.drawable.ic_launcher_background);
+        }
         tvName.setText(i.getStringExtra("fieldName"));
         tvAddress.setText(i.getStringExtra("address"));
         tvDescription.setText(i.getStringExtra("description"));
