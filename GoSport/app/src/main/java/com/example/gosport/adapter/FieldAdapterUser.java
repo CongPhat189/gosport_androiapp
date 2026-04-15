@@ -64,7 +64,21 @@ public class FieldAdapterUser extends BaseAdapter {
         category.setText("Loại sân: " + field.getCategoryName());
         String priceText = formatter.format(field.getPricePerHour());
         price.setText("Giá: " + priceText + " đ/giờ");
-        status.setText("Trạng thái: " + field.getStatus());
+        String statusVN;
+
+        switch (field.getStatus()) {
+            case "Available":
+                statusVN = "Đang hoạt động";
+                break;
+            case "Maintenance":
+                statusVN = "Bảo trì";
+                break;
+            default:
+                statusVN = "Không xác định";
+                break;
+        }
+
+        status.setText("Trạng thái: " + statusVN);
         address.setText("Địa chỉ: " + field.getAddress());
         Glide.with(context)
                 .load(new File(field.getImageUrl()))

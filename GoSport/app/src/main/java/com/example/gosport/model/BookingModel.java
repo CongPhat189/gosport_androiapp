@@ -29,7 +29,7 @@ public class BookingModel {
         this.paymentMethod = cursor.getString(cursor.getColumnIndexOrThrow("payment_method"));
         this.address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
 
-        // Kiểm tra cột trước khi lấy - Giúp dùng chung an toàn
+
         int fieldNameIdx = cursor.getColumnIndex("field_name");
         if (fieldNameIdx != -1) this.fieldName = cursor.getString(fieldNameIdx);
 
